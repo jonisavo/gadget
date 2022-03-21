@@ -24,47 +24,6 @@ namespace InspectorEssentials.Editor.Internal
 
         //----------------------------------------------------------------------
 
-        private delegate void ShowObjectSelectorDelegate(
-            Object obj,
-            Type requiredType,
-            SerializedProperty property,
-            bool allowSceneObjects);
-
-        private static readonly MethodInfo ObjectSelector_ShowObjectSelectorInfo =
-            ObjectSelectorType.GetMethod(
-                "Show",
-                new Type[]
-                {
-                    typeof(Object),
-                    typeof(Type),
-                    typeof(SerializedProperty),
-                    typeof(bool)
-                });
-
-        public static void Show(
-            int controlID,
-            Object target,
-            Type targetType,
-            SerializedProperty property,
-            bool allowSceneObjects,
-            string searchFilter = "")
-        {
-            var objectSelector = GetObjectSelector();
-            ObjectSelector_ShowObjectSelectorInfo.Invoke(
-                objectSelector,
-                new object[]
-                {
-                    target,
-                    targetType,
-                    property,
-                    allowSceneObjects
-                });
-            SetControlID(objectSelector, controlID);
-            SetSearchFilter(objectSelector, searchFilter);
-        }
-
-        //----------------------------------------------------------------------
-
         private const string ObjectSelectorClosedCommand = "ObjectSelectorClosed";
         private const string ObjectSelectorUpdatedCommand = "ObjectSelectorUpdated";
 
@@ -134,14 +93,6 @@ namespace InspectorEssentials.Editor.Internal
                 .GetValue(objectSelector);
         }
 
-        private static void SetControlID(
-            Object objectSelector,
-            int controlID)
-        {
-            ObjectSelector_objectSelectorID
-            .SetValue(objectSelector, controlID);
-        }
-
         //----------------------------------------------------------------------
 
         private static readonly MethodInfo ObjectSelector_GetSelectedInstanceID =
@@ -156,26 +107,6 @@ namespace InspectorEssentials.Editor.Internal
             return (int) ObjectSelector_GetSelectedInstanceID
                 .Invoke(objectSelector, null);
         }
-
-        private static Object GetSelectedObject(Object objectSelector)
-        {
-            var instanceID = GetSelectedInstanceID(objectSelector);
-            return EditorUtility.InstanceIDToObject(instanceID);
-        }
-
-        //----------------------------------------------------------------------
-
-        private static readonly PropertyInfo ObjectSelector_searchFilterInfo =
-            ObjectSelectorType.GetProperty(
-                "searchFilter",
-                BindingFlags.Instance |
-                BindingFlags.Public |
-                BindingFlags.NonPublic);
-
-        private static void SetSearchFilter(Object objectSelector, string value)
-        {
-            ObjectSelector_searchFilterInfo
-            .SetValue(objectSelector, value, null);
-        }
+        
     }
 }

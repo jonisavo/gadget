@@ -22,12 +22,11 @@ namespace InspectorEssentials.Editor.Attributes
             public readonly GUIStyle InDropDownStyle =
                 new GUIStyle("IN DropDown");
 
-            public readonly GUIContent SelectContent =
-                new GUIContent("Select...");
-            public readonly GUIContent CreateSubassetContent =
-                new GUIContent("Create Subasset");
-            public readonly GUIContent DeleteSubassetContent =
-                new GUIContent("Delete Subasset");
+            public readonly GUIContent CreateContent =
+                new GUIContent("Create");
+
+            public readonly GUIContent NoAssetsToCreate =
+                new GUIContent("No assets to create");
         }
 
         private static GUIResources s_gui;
@@ -35,8 +34,8 @@ namespace InspectorEssentials.Editor.Attributes
 
         //----------------------------------------------------------------------
 
-        private static readonly Dictionary<Type, Type[]>
-        s_concreteTypes = new Dictionary<Type, Type[]>();
+        private static readonly Dictionary<Type, Type[]> 
+            s_concreteTypes = new Dictionary<Type, Type[]>();
 
         private static Type[] GetConcreteTypes(Type type)
         {
@@ -127,9 +126,6 @@ namespace InspectorEssentials.Editor.Attributes
                 if (!targetExists || ObjectScope.Contains(target))
                     return;
                 
-                var enabled =
-                    attribute.canEditRemoteTarget ||
-                    TargetIsSubassetOf(asset, target);
                 var inlineRect = position;
                 inlineRect.yMin = propertyRect.yMax;
                 var spacing = EditorGUIUtility.standardVerticalSpacing;
@@ -137,7 +133,7 @@ namespace InspectorEssentials.Editor.Attributes
                 inlineRect.xMax -= 18;
                 inlineRect.yMin += spacing;
                 inlineRect.yMax -= 1;
-                DoInlinePropertyGUI(inlineRect, target, enabled);
+                DoInlinePropertyGUI(inlineRect, target);
             }
         }
 
@@ -154,15 +150,15 @@ namespace InspectorEssentials.Editor.Attributes
             Rect position,
             SerializedProperty property)
         {
-            if (attribute.canCreateSubasset == false)
+            if (!attribute.AllowInlineCreation)
                 return;
 
             var controlID = GetControlID(position);
             ObjectSelector.DoGUI(controlID, property, SetObjectReferenceValue);
 
             var buttonRect = position;
-            buttonRect.xMin = buttonRect.xMax - 16;
-            var buttonStyle = EditorStyles.label;
+            buttonRect.xMin = buttonRect.xMax - 54;
+            var buttonStyle = EditorStyles.miniButton;
 
             var isRepaint = Event.current.type == EventType.Repaint;
             if (isRepaint)
@@ -174,18 +170,10 @@ namespace InspectorEssentials.Editor.Attributes
                 dropDownStyle.Draw(rect, false, false, false, false);
             }
 
-            var noLabel = GUIContent.none;
-            
-            if (!GUI.Button(buttonRect, noLabel, buttonStyle))
+            if (!GUI.Button(buttonRect, gui.CreateContent, buttonStyle))
                 return;
-            
-            var types = GetConcreteTypes(fieldInfo.FieldType);
-            
-            ShowContextMenu(
-                buttonRect,
-                controlID,
-                property,
-                types);
+
+            ShowContextMenu(buttonRect, property);
         }
 
         private static void SetObjectReferenceValue(
@@ -193,18 +181,9 @@ namespace InspectorEssentials.Editor.Attributes
             Object newTarget)
         {
             var serializedObject = property.serializedObject;
-            var oldSubassets = property.FindReferencedSubassets();
             property.objectReferenceValue = newTarget;
             property.isExpanded = true;
-            if (oldSubassets.Any())
-            {
-                serializedObject.ApplyModifiedPropertiesWithoutUndo();
-                serializedObject.DestroyUnreferencedSubassets(oldSubassets);
-            }
-            else
-            {
-                serializedObject.ApplyModifiedProperties();
-            }
+            serializedObject.ApplyModifiedProperties();
         }
 
         //----------------------------------------------------------------------
@@ -223,6 +202,9 @@ namespace InspectorEssentials.Editor.Attributes
             GUIContent label)
         {
             label = EditorGUI.BeginProperty(position, label, property);
+
+            if (attribute.AllowInlineCreation)
+                position.xMax -= 54;
 
             var objectType = fieldInfo.FieldType;
             var oldTarget = property.objectReferenceValue;
@@ -258,44 +240,19 @@ namespace InspectorEssentials.Editor.Attributes
             isExpanded = EditorGUI.Foldout(foldoutRect, isExpanded, noLabel);
 
             if (targetExists)
-            {
                 property.isExpanded = isExpanded;
-            }
         }
 
         //----------------------------------------------------------------------
 
-        private void ShowContextMenu(
-            Rect position,
-            int controlID,
-            SerializedProperty property,
-            Type[] types)
+        private void ShowContextMenu(Rect position, SerializedProperty property)
         {
             var menu = new GenericMenu();
-            
-            menu.AddItem(
-                gui.SelectContent,
-                on: false,
-                func: () => ShowObjectSelector(controlID, property));
 
-            menu.AddSeparator("");
-            
-            var target = property.objectReferenceValue;
-            
-            if (target != null && TargetIsSubassetOf(property))
-                menu.AddItem(
-                    gui.DeleteSubassetContent,
-                    on: false,
-                    func: () => DestroyTarget(property));
-            else
-                menu.AddDisabledItem(gui.DeleteSubassetContent);
+            var types = GetConcreteTypes(fieldInfo.FieldType);
 
             if (types.Length > 0)
             {
-                menu.AddSeparator("");
-
-                menu.AddDisabledItem(gui.CreateSubassetContent);
-
                 var typeIndex = 0;
                 var useTypeFullName = types.Length > 16;
                 foreach (var type in types)
@@ -315,31 +272,16 @@ namespace InspectorEssentials.Editor.Attributes
                         new GUIContent(menuPath),
                         on: false,
                         func: () =>
-                            AddSubasset(property, types, menuTypeIndex));
+                            CreateAsset(property, types[menuTypeIndex]));
                 }
+            }
+            else
+            {
+                menu.AddDisabledItem(gui.NoAssetsToCreate);
             }
 
             menu.DropDown(position);
         }
-
-        //----------------------------------------------------------------------
-
-        private void ShowObjectSelector(
-            int controlID,
-            SerializedProperty property)
-        {
-            var target = property.objectReferenceValue;
-            var objectType = fieldInfo.FieldType;
-            var allowSceneObjects = AllowSceneObjects(property);
-            ObjectSelector.Show(
-                controlID,
-                target,
-                objectType,
-                property,
-                allowSceneObjects);
-        }
-
-        //----------------------------------------------------------------------
 
         private float GetInlinePropertyHeight(Object target)
         {
@@ -351,8 +293,7 @@ namespace InspectorEssentials.Editor.Attributes
             foreach (var property in properties)
             {
                 height += spacing;
-                height +=
-                    EditorGUI
+                height += EditorGUI
                     .GetPropertyHeight(property, includeChildren: true);
             }
             if (height > 0)
@@ -360,10 +301,7 @@ namespace InspectorEssentials.Editor.Attributes
             return height;
         }
 
-        private void DoInlinePropertyGUI(
-            Rect position,
-            Object target,
-            bool enabled)
+        private void DoInlinePropertyGUI(Rect position, Object target)
         {
             DrawInlineBackground(position);
             var serializedObject = GetSerializedObject(target);
@@ -374,7 +312,8 @@ namespace InspectorEssentials.Editor.Attributes
             position.xMax -= 5;
             position.yMin += 1;
             position.yMax -= 1;
-            EditorGUI.BeginDisabledGroup(!enabled);
+            EditorGUI.BeginDisabledGroup(attribute.DisallowEditing);
+            
             foreach (var property in properties)
             {
                 position.y += spacing;
@@ -383,41 +322,42 @@ namespace InspectorEssentials.Editor.Attributes
                 EditorGUI.PropertyField(position, property, includeChildren: true);
                 position.y += position.height;
             }
+            
             EditorGUI.EndDisabledGroup();
-            if (enabled)
-            {
+            
+            if (!attribute.DisallowEditing)
                 serializedObject.ApplyModifiedProperties();
-            }
         }
 
         private static void DrawInlineBackground(Rect position)
         {
             var isRepaint = Event.current.type == EventType.Repaint;
-            if (isRepaint)
+            
+            if (!isRepaint)
+                return;
+            
+            // var style = new GUIStyle("ProgressBarBack");
+            // var style = new GUIStyle("Badge");
+            // var style = new GUIStyle("HelpBox");
+            // var style = new GUIStyle("ObjectFieldThumb");
+            var style = new GUIStyle("ShurikenEffectBg");
+            using (ColorAlphaScope(0.5f))
             {
-                // var style = new GUIStyle("ProgressBarBack");
-                // var style = new GUIStyle("Badge");
-                // var style = new GUIStyle("HelpBox");
-                // var style = new GUIStyle("ObjectFieldThumb");
-                var style = new GUIStyle("ShurikenEffectBg");
-                using (ColorAlphaScope(0.5f))
-                {
-                    style.Draw(position, false, false, false, false);
-                }
-                // EditorGUI.DrawRect()
+                style.Draw(position, false, false, false, false);
             }
+            // EditorGUI.DrawRect()
         }
 
         //----------------------------------------------------------------------
 
-        private readonly Dictionary<Object, SerializedObject>
-        m_serializedObjectMap = new Dictionary<Object, SerializedObject>();
+        private readonly Dictionary<Object, SerializedObject> 
+            m_serializedObjectMap = new Dictionary<Object, SerializedObject>();
 
         private SerializedObject GetSerializedObject(Object target)
         {
             Debug.Assert(target != null);
-            var serializedObject = default(SerializedObject);
-            if (m_serializedObjectMap.TryGetValue(target, out serializedObject))
+            
+            if (m_serializedObjectMap.TryGetValue(target, out var serializedObject))
                 return serializedObject;
 
             serializedObject = new SerializedObject(target);
@@ -427,14 +367,17 @@ namespace InspectorEssentials.Editor.Attributes
 
         private void DiscardObsoleteSerializedObjects()
         {
-            var map = m_serializedObjectMap;
-            var destroyedObjects = map.Keys.Where(key => key == null);
-            if (destroyedObjects.Any())
+            var destroyedObjects =
+                m_serializedObjectMap.Keys.Where(key => key == null);
+
+            var enumerable = destroyedObjects as Object[] ?? destroyedObjects.ToArray();
+            
+            if (!enumerable.Any())
+                return;
+            
+            foreach (var @object in enumerable.ToArray())
             {
-                foreach (var @object in destroyedObjects.ToArray())
-                {
-                    map.Remove(@object);
-                }
+                m_serializedObjectMap.Remove(@object);
             }
         }
 
@@ -446,122 +389,13 @@ namespace InspectorEssentials.Editor.Attributes
 
         //----------------------------------------------------------------------
 
-        private static Object CreateInstance(Type type)
+
+        private void CreateAsset(SerializedProperty property, Type type)
         {
-            Debug.Assert(typeof(Object).IsAssignableFrom(type));
-            return typeof(ScriptableObject).IsAssignableFrom(type)
-                ? ScriptableObject.CreateInstance(type)
-                : (Object)Activator.CreateInstance(type);
-        }
-
-        //----------------------------------------------------------------------
-
-        private static bool TargetIsSubassetOf(SerializedProperty property)
-        {
-            var serializedObject = property.serializedObject;
-            var asset = serializedObject.targetObject;
-            var target = property.objectReferenceValue;
-            return TargetIsSubassetOf(asset, target);
-        }
-
-        private static bool TargetIsSubassetOf(
-            Object asset,
-            Object target)
-        {
-            if (asset == null)
-                return false;
-
-            if (asset == target)
-                return false;
-
-            if (target == null)
-                return false;
-
-            var assetPath = AssetDatabase.GetAssetPath(asset);
-            if (assetPath == null)
-                return false;
-
-            var targetPath = AssetDatabase.GetAssetPath(target);
-            if (targetPath == null)
-                return false;
-
-            return assetPath == targetPath;
-        }
-
-        //----------------------------------------------------------------------
-
-        private static bool CanAddSubasset(Object obj)
-        {
-            var hideFlags = obj.hideFlags;
-            var dontSaveInBuild = HideFlags.DontSaveInBuild;
-            if ((hideFlags & dontSaveInBuild) == dontSaveInBuild)
-                return false;
-
-            var dontSaveInEditor = HideFlags.DontSaveInEditor;
-            if ((hideFlags & dontSaveInEditor) == dontSaveInEditor)
-                return false;
-
-            return true;
-        }
-
-        private void AddSubasset(
-            SerializedProperty property,
-            Type[] types,
-            int typeIndex)
-        {
-            var subassetType = types[typeIndex];
-
-            var subasset = CreateInstance(subassetType);
-            if (subasset == null)
-            {
-                Debug.LogErrorFormat(
-                    "Failed to create subasset of type {0}",
-                    subassetType.FullName);
+            if (!ScriptableObjectUtils.TryCreateNewAsset(type, out var scriptableObject))
                 return;
-            }
-
-            if (!CanAddSubasset(subasset))
-            {
-                Debug.LogErrorFormat(
-                    "Cannot save subasset of type {0}",
-                    subassetType.FullName);
-                TryDestroyImmediate(subasset, allowDestroyingAssets: true);
-                return;
-            }
-
-            subasset.name = subassetType.Name;
-
-            var serializedObject = property.serializedObject;
-            serializedObject.targetObject.AddSubasset(subasset);
-            SetObjectReferenceValue(property, subasset);
-        }
-
-        //----------------------------------------------------------------------
-
-        private void DestroyTarget(SerializedProperty property)
-        {
-            var target = property.objectReferenceValue;
-            if (target != null)
-            {
-                SetObjectReferenceValue(property, null);
-            }
-        }
-
-        //----------------------------------------------------------------------
-
-        private static void TryDestroyImmediate(
-            Object obj,
-            bool allowDestroyingAssets = false)
-        {
-            try
-            {
-                if (obj != null)
-                    Object.DestroyImmediate(obj, allowDestroyingAssets);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogException(ex);
-            }
+            
+            SetObjectReferenceValue(property, scriptableObject);
         }
 
         //----------------------------------------------------------------------
