@@ -1,8 +1,12 @@
 {
-    "name": "EditorAttributesLite.Core",
-    "rootNamespace": "EditorAttributesLite",
-    "references": [],
-    "includePlatforms": [],
+    "name": "InspectorEssentials.Editor",
+    "rootNamespace": "InspectorEssentials",
+    "references": [
+        "GUID:38f3664f7e5f4cf41bd86ee9e4085cbc"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

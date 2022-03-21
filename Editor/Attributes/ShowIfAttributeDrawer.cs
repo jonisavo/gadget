@@ -1,9 +1,9 @@
-﻿using EditorAttributesLite.Core;
-using EditorAttributesLite.Editor.Internal;
+﻿using InspectorEssentials.Core;
+using InspectorEssentials.Editor.Internal;
 using UnityEditor;
 using UnityEngine;
 
-namespace EditorAttributesLite.Editor.Attributes
+namespace InspectorEssentials.Editor.Attributes
 {
     [CustomPropertyDrawer(typeof(ShowIfAttribute))]
     public class ShowIfAttributeDrawer : ConditionalBoolPropertyDrawerBase<ShowIfAttribute>

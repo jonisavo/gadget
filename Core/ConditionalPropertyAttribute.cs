@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace EditorAttributesLite.Core
+namespace InspectorEssentials.Core
 {
     public abstract class ConditionalPropertyAttribute : PropertyAttribute
     {

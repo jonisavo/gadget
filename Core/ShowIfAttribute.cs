@@ -1,4 +1,4 @@
-﻿namespace EditorAttributesLite.Core
+﻿namespace InspectorEssentials.Core
 {
     /// <summary>
     /// When used on a field, it is shown only if the given boolean field is true.

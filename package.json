@@ -1,12 +1,12 @@
 {
-  "name": "fi.jonisavo.editor-attributes-lite",
+  "name": "fi.jonisavo.inspector-essentials",
   "version": "0.0.1",
-  "displayName": "Editor Attributes Lite",
+  "displayName": "Inspector Essentials",
   "author": {
     "name": "Joni Savolainen",
     "email": "joni@savolainen.io",
     "url": "https://savolainen.io"
   },
-  "description": "A small set of attributes for the Unity inspector.",
+  "description": "A small set of attributes for the Unity Inspector.",
   "type": "library"
 }

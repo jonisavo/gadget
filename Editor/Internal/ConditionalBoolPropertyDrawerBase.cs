@@ -1,8 +1,8 @@
-﻿using EditorAttributesLite.Core;
+﻿using InspectorEssentials.Core;
 using UnityEditor;
 using UnityEngine;
 
-namespace EditorAttributesLite.Editor.Internal
+namespace InspectorEssentials.Editor.Internal
 {
     public abstract class ConditionalBoolPropertyDrawerBase<T> : PropertyDrawer
         where T : ConditionalPropertyAttribute
