@@ -32,34 +32,7 @@ namespace InspectorEssentials.Editor.Attributes
         private static GUIResources s_gui;
         private static GUIResources gui => s_gui ??= new GUIResources();
 
-        //----------------------------------------------------------------------
-
-        private static readonly Dictionary<Type, Type[]> 
-            s_concreteTypes = new Dictionary<Type, Type[]>();
-
-        private static Type[] GetConcreteTypes(Type type)
-        {
-            if (s_concreteTypes.TryGetValue(type, out var concreteTypes))
-                return concreteTypes;
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var types = assemblies.SelectMany(a => a.GetTypes());
-            concreteTypes =
-                types
-                .Where(t =>
-                    t.IsAbstract == false &&
-                    t.IsGenericTypeDefinition == false &&
-                    type.IsAssignableFrom(t))
-                .OrderBy(t => t.FullName.ToLower())
-                .ToArray();
-
-            s_concreteTypes.Add(type, concreteTypes);
-            return concreteTypes;
-        }
-
-        //----------------------------------------------------------------------
-
-        public new InlineAttribute attribute => (InlineAttribute)base.attribute;
+        public new InlineAttribute attribute => base.attribute as InlineAttribute;
 
         //----------------------------------------------------------------------
 
@@ -104,7 +77,7 @@ namespace InspectorEssentials.Editor.Attributes
 
             DoContextMenuGUI(propertyRect, property);
             DoObjectFieldGUI(propertyRect, property, label);
-            
+
             if (property.objectReferenceValue)
                 DoFoldoutGUI(propertyRect, property);
 
@@ -206,8 +179,10 @@ namespace InspectorEssentials.Editor.Attributes
             if (attribute.AllowInlineCreation)
                 position.xMax -= 54;
 
-            var objectType = fieldInfo.FieldType;
+            var objectType = TypeUtils.GetPrimaryConcreteType(fieldInfo.FieldType);
+
             var oldTarget = property.objectReferenceValue;
+            
             var newTarget =
                 EditorGUI.ObjectField(
                     position,
@@ -249,7 +224,7 @@ namespace InspectorEssentials.Editor.Attributes
         {
             var menu = new GenericMenu();
 
-            var types = GetConcreteTypes(fieldInfo.FieldType);
+            var types = TypeUtils.GetConcreteTypes(fieldInfo.FieldType);
 
             if (types.Length > 0)
             {
@@ -345,7 +320,6 @@ namespace InspectorEssentials.Editor.Attributes
             {
                 style.Draw(position, false, false, false, false);
             }
-            // EditorGUI.DrawRect()
         }
 
         //----------------------------------------------------------------------
