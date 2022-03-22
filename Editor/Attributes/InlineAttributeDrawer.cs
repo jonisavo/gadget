@@ -29,8 +29,8 @@ namespace InspectorEssentials.Editor.Attributes
                 new GUIContent("No assets to create");
         }
 
-        private static GUIResources s_gui;
-        private static GUIResources gui => s_gui ??= new GUIResources();
+        private static GUIResources _guiResources;
+        private static GUIResources Resources => _guiResources ??= new GUIResources();
 
         public new InlineAttribute attribute => base.attribute as InlineAttribute;
 
@@ -56,13 +56,14 @@ namespace InspectorEssentials.Editor.Attributes
             {
                 var target = property.objectReferenceValue;
                 var targetExists = target != null;
-                if (targetExists && !ObjectScope.Contains(target))
-                {
-                    var spacing = EditorGUIUtility.standardVerticalSpacing;
-                    height += spacing;
-                    height += GetInlinePropertyHeight(target);
-                    height += 1;
-                }
+                
+                if (!targetExists || ObjectScope.Contains(target))
+                    return height;
+                
+                var spacing = EditorGUIUtility.standardVerticalSpacing;
+                height += spacing;
+                height += GetInlinePropertyHeight(target);
+                height += 1;
             }
             return height;
         }
@@ -136,14 +137,14 @@ namespace InspectorEssentials.Editor.Attributes
             var isRepaint = Event.current.type == EventType.Repaint;
             if (isRepaint)
             {
-                var dropDownStyle = gui.InDropDownStyle;
+                var dropDownStyle = Resources.InDropDownStyle;
                 var rect = buttonRect;
                 rect.x += 2;
                 rect.y += 6;
                 dropDownStyle.Draw(rect, false, false, false, false);
             }
 
-            if (!GUI.Button(buttonRect, gui.CreateContent, buttonStyle))
+            if (!GUI.Button(buttonRect, Resources.CreateContent, buttonStyle))
                 return;
 
             ShowContextMenu(buttonRect, property);
@@ -252,7 +253,7 @@ namespace InspectorEssentials.Editor.Attributes
             }
             else
             {
-                menu.AddDisabledItem(gui.NoAssetsToCreate);
+                menu.AddDisabledItem(Resources.NoAssetsToCreate);
             }
 
             menu.DropDown(position);
@@ -325,24 +326,24 @@ namespace InspectorEssentials.Editor.Attributes
         //----------------------------------------------------------------------
 
         private readonly Dictionary<Object, SerializedObject> 
-            m_serializedObjectMap = new Dictionary<Object, SerializedObject>();
+            _serializedObjectMap = new Dictionary<Object, SerializedObject>();
 
         private SerializedObject GetSerializedObject(Object target)
         {
             Debug.Assert(target != null);
             
-            if (m_serializedObjectMap.TryGetValue(target, out var serializedObject))
+            if (_serializedObjectMap.TryGetValue(target, out var serializedObject))
                 return serializedObject;
 
             serializedObject = new SerializedObject(target);
-            m_serializedObjectMap.Add(target, serializedObject);
+            _serializedObjectMap.Add(target, serializedObject);
             return serializedObject;
         }
 
         private void DiscardObsoleteSerializedObjects()
         {
             var destroyedObjects =
-                m_serializedObjectMap.Keys.Where(key => key == null);
+                _serializedObjectMap.Keys.Where(key => key == null);
 
             var enumerable = destroyedObjects as Object[] ?? destroyedObjects.ToArray();
             
@@ -351,7 +352,7 @@ namespace InspectorEssentials.Editor.Attributes
             
             foreach (var @object in enumerable.ToArray())
             {
-                m_serializedObjectMap.Remove(@object);
+                _serializedObjectMap.Remove(@object);
             }
         }
 

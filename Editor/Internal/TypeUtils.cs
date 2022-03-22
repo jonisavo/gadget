@@ -14,6 +14,9 @@ namespace InspectorEssentials.Editor.Internal
         {
             if (type.IsArray)
                 type = type.GetElementType();
+
+            if (type == null)
+                return Array.Empty<Type>();
             
             if (ConcreteTypes.TryGetValue(type, out var concreteTypes))
                 return concreteTypes;
@@ -35,6 +38,7 @@ namespace InspectorEssentials.Editor.Internal
                     .Where(t =>
                         t.IsAbstract == false &&
                         t.IsGenericTypeDefinition == false &&
+                        t.FullName != null &&
                         type.IsAssignableFrom(t))
                     .OrderBy(t => t.FullName.ToLower())
                     .ToArray();
