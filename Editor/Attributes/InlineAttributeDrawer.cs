@@ -316,7 +316,7 @@ namespace InspectorEssentials.Editor.Attributes
             // var style = new GUIStyle("HelpBox");
             // var style = new GUIStyle("ObjectFieldThumb");
             var style = new GUIStyle("ShurikenEffectBg");
-            using (ColorAlphaScope(0.5f))
+            using (ScopeUtils.ColorAlphaScope(0.5f))
             {
                 style.Draw(position, false, false, false, false);
             }
@@ -360,84 +360,13 @@ namespace InspectorEssentials.Editor.Attributes
             EditorApplication.delayCall -= DiscardObsoleteSerializedObjects;
             EditorApplication.delayCall += DiscardObsoleteSerializedObjects;
         }
-
-        //----------------------------------------------------------------------
-
-
-        private void CreateAsset(SerializedProperty property, Type type)
+        
+        private static void CreateAsset(SerializedProperty property, Type type)
         {
             if (!ScriptableObjectUtils.TryCreateNewAsset(type, out var scriptableObject))
                 return;
             
             SetObjectReferenceValue(property, scriptableObject);
         }
-
-        //----------------------------------------------------------------------
-
-        private readonly struct ObjectScope : IDisposable
-        {
-            private static readonly HashSet<int> s_objectScopeSet =
-                new HashSet<int>();
-
-            private readonly int m_instanceID;
-
-            public ObjectScope(Object obj)
-            {
-                m_instanceID = obj.GetInstanceID();
-                s_objectScopeSet.Add(m_instanceID);
-            }
-
-            public void Dispose()
-            {
-                s_objectScopeSet.Remove(m_instanceID);
-            }
-
-            public static bool Contains(Object obj)
-            {
-                if (obj == null)
-                    return false;
-                var instanceID = obj.GetInstanceID();
-                return s_objectScopeSet.Contains(instanceID);
-            }
-        }
-
-        //======================================================================
-
-        protected struct Deferred : IDisposable
-        {
-            private readonly Action _onDispose;
-
-            public Deferred(Action onDispose)
-            {
-                _onDispose = onDispose;
-            }
-
-            public void Dispose()
-            {
-                if (_onDispose != null)
-                    _onDispose();
-            }
-        }
-
-        protected static Deferred ColorScope(Color newColor)
-        {
-            var oldColor = GUI.color;
-            GUI.color = newColor;
-            return new Deferred(() => GUI.color = oldColor);
-        }
-
-        protected static Deferred ColorAlphaScope(float a)
-        {
-            var oldColor = GUI.color;
-            GUI.color = new Color(1, 1, 1, a);
-            return new Deferred(() => GUI.color = oldColor);
-        }
-
-        protected static Deferred IndentLevelScope(int indent = 1)
-        {
-            EditorGUI.indentLevel += indent;
-            return new Deferred(() => EditorGUI.indentLevel -= indent);
-        }
     }
-
 }
