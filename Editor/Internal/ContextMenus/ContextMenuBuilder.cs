@@ -15,7 +15,11 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
 
         protected abstract T[] GetChoices(FieldInfo fieldInfo, SerializedProperty property);
 
-        private void BuildMenu(GenericMenu menu, IEnumerable<T> items, SerializedProperty property)
+        protected virtual void BuildMenu(
+            GenericMenu menu,
+            IEnumerable<T> items,
+            FieldInfo fieldInfo,
+            SerializedProperty property)
         {
             foreach (var item in items)
             {
@@ -33,7 +37,7 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
             if (choices.Length == 0)
                 BuildEmptyMenu(menu);
             else
-                BuildMenu(menu, choices, property);
+                BuildMenu(menu, choices, fieldInfo, property);
 
             menu.DropDown(position);
         }

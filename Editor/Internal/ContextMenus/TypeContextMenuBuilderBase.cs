@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using InspectorEssentials.Core;
 using UnityEditor;
@@ -48,6 +49,20 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
         protected override Type[] GetChoices(FieldInfo fieldInfo, SerializedProperty property)
         {
             return TypeUtils.GetConcreteTypes(fieldInfo.FieldType);
+        }
+
+        protected override void BuildMenu(
+            GenericMenu menu,
+            IEnumerable<Type> items,
+            FieldInfo fieldInfo,
+            SerializedProperty property)
+        {
+            var typeName = TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
+            menu.AddDisabledItem(new GUIContent(typeName));
+            
+            menu.AddSeparator("");
+            
+            base.BuildMenu(menu, items, fieldInfo, property);
         }
     }
 }
