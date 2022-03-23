@@ -12,6 +12,33 @@ namespace InspectorEssentials.Editor.Attributes
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            var isValid = IsValid(property);
+
+            if (!isValid)
+            {
+                DrawErrorBox(position);
+                return;
+            }
+            
+            EditorGUI.BeginChangeCheck();
+            
+            DrawTypeDropdownButton(position, property, label);
+            
+            EditorGUI.PropertyField(position, property, label, true);
+
+            EditorGUI.EndChangeCheck();
+        }
+
+        private void DrawErrorBox(Rect position)
+        {
+            EditorGUI.HelpBox(
+                position,
+                $"Field ${fieldInfo.Name} is invalid. SerializeReferenceSelector only supports managed references.",
+                MessageType.Error);
+        }
+
+        private void DrawTypeDropdownButton(Rect position, SerializedProperty property, GUIContent label)
+        {
             var typeName = GetShownTypeName(property.managedReferenceFullTypename);
             var typeNameGUIContent = new GUIContent(typeName);
                 
@@ -20,15 +47,9 @@ namespace InspectorEssentials.Editor.Attributes
 
             var buttonX = position.x + position.width - buttonWidth;
             var buttonRect = new Rect(buttonX, position.y, buttonWidth, buttonHeight);
-            
-            EditorGUI.BeginChangeCheck();
-
+                
             if (EditorGUI.DropdownButton(buttonRect, typeNameGUIContent, FocusType.Passive))
                 ShowTypeDropdown(buttonRect, property);
-
-            EditorGUI.PropertyField(position, property, label, true);
-
-            EditorGUI.EndChangeCheck();
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -43,7 +64,7 @@ namespace InspectorEssentials.Editor.Attributes
                 var concreteTypeName =
                     TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
                 
-                return $"(select type for {concreteTypeName})";
+                return $"Select {concreteTypeName}";
             }
 
             var index = typeName.LastIndexOf(' ');
@@ -66,6 +87,11 @@ namespace InspectorEssentials.Editor.Attributes
             }
 
             return typeName;
+        }
+
+        private bool IsValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.ManagedReference;
         }
         
         private void ShowTypeDropdown(Rect position, SerializedProperty property)
