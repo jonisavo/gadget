@@ -16,7 +16,8 @@ namespace InspectorEssentials.Editor.Internal
 
             var assetsIndex = dest.IndexOf("Assets/", StringComparison.Ordinal);
 
-            dest = dest.Substring(assetsIndex);
+            if (assetsIndex >= 0) 
+                dest = dest.Substring(assetsIndex);
 
             if (string.IsNullOrEmpty(dest))
             {
