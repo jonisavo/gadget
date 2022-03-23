@@ -56,5 +56,12 @@ namespace InspectorEssentials.Editor.Internal
 
             return type;
         }
+
+        public static string GetPrimaryConcreteTypeName(Type type)
+        {
+            var concreteType = GetPrimaryConcreteType(type);
+
+            return concreteType.Name;
+        }
     }
 }

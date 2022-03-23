@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using InspectorEssentials.Core;
 using InspectorEssentials.Editor.Internal;
+using InspectorEssentials.Editor.Internal.ContextMenus;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,9 +23,6 @@ namespace InspectorEssentials.Editor.Attributes
 
             public readonly GUIContent CreateContent =
                 new GUIContent("Create");
-
-            public readonly GUIContent NoAssetsToCreate =
-                new GUIContent("No assets to create");
         }
 
         private static GUIResources _guiResources;
@@ -223,40 +219,11 @@ namespace InspectorEssentials.Editor.Attributes
 
         private void ShowContextMenu(Rect position, SerializedProperty property)
         {
-            var menu = new GenericMenu();
-
             var types = TypeUtils.GetConcreteTypes(fieldInfo.FieldType);
 
-            if (types.Length > 0)
-            {
-                var typeIndex = 0;
-                var useTypeFullName = types.Length > 16;
-                foreach (var type in types)
-                {
-                    var createAssetMenuAttribute =
-                        (CreateAssetMenuAttribute)
-                        type.GetCustomAttribute(
-                            typeof(CreateAssetMenuAttribute));
-                    var menuPath =
-                        createAssetMenuAttribute != null
-                        ? createAssetMenuAttribute.menuName
-                        : useTypeFullName
-                        ? type.FullName.Replace('.', '/')
-                        : type.Name;
-                    var menuTypeIndex = typeIndex++;
-                    menu.AddItem(
-                        new GUIContent(menuPath),
-                        on: false,
-                        func: () =>
-                            CreateAsset(property, types[menuTypeIndex]));
-                }
-            }
-            else
-            {
-                menu.AddDisabledItem(Resources.NoAssetsToCreate);
-            }
+            var menuBuilder = new InlineTypeContextMenuBuilder(types.Length > 16);
 
-            menu.DropDown(position);
+            menuBuilder.Show(position, fieldInfo, property);
         }
 
         private float GetInlinePropertyHeight(Object target)
@@ -351,23 +318,13 @@ namespace InspectorEssentials.Editor.Attributes
                 return;
             
             foreach (var @object in enumerable.ToArray())
-            {
                 _serializedObjectMap.Remove(@object);
-            }
         }
 
         private void DiscardObsoleteSerializedObjectsOnNextEditorUpdate()
         {
             EditorApplication.delayCall -= DiscardObsoleteSerializedObjects;
             EditorApplication.delayCall += DiscardObsoleteSerializedObjects;
-        }
-        
-        private static void CreateAsset(SerializedProperty property, Type type)
-        {
-            if (!ScriptableObjectUtils.TryCreateNewAsset(type, out var scriptableObject))
-                return;
-            
-            SetObjectReferenceValue(property, scriptableObject);
         }
     }
 }
