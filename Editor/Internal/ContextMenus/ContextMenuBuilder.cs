@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace InspectorEssentials.Editor.Internal.ContextMenus
 {
-    public abstract class ContextMenuBuilder<T>
+    internal abstract class ContextMenuBuilder<T>
     {
         protected abstract string BuildMenuPath(T item);
 

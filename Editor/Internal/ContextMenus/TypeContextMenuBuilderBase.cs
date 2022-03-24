@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace InspectorEssentials.Editor.Internal.ContextMenus
 {
-    public class TypeContextMenuBuilderBase : ContextMenuBuilder<Type>
+    internal class TypeContextMenuBuilderBase : ContextMenuBuilder<Type>
     {
         private readonly bool _useTypeFullName;
 

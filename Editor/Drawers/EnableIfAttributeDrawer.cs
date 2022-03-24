@@ -1,5 +1,4 @@
 ﻿using InspectorEssentials.Core;
-using InspectorEssentials.Editor.Internal;
 using UnityEditor;
 using UnityEngine;
 

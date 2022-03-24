@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace InspectorEssentials.Editor.Internal.ContextMenus
 {
-    public class InlineTypeContextMenuBuilder : TypeContextMenuBuilderBase
+    internal class InlineTypeContextMenuBuilder : TypeContextMenuBuilderBase
     {
         public InlineTypeContextMenuBuilder(bool useTypeFullName) : base(useTypeFullName) {}
 

@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace InspectorEssentials.Editor.Internal.ContextMenus
 {
-    public class SerializeReferenceTypeContextMenuBuilder : TypeContextMenuBuilderBase
+    internal class SerializeReferenceTypeContextMenuBuilder : TypeContextMenuBuilderBase
     {
         public SerializeReferenceTypeContextMenuBuilder(bool useTypeFullName) : base(useTypeFullName) {}
         

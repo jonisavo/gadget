@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Internal
+namespace InspectorEssentials.Editor.Drawers
 {
     public abstract class ConditionalBoolPropertyDrawerBase<T> : PropertyDrawer
         where T : ConditionalPropertyAttribute
