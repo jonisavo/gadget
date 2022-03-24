@@ -41,6 +41,7 @@ namespace InspectorEssentials.Editor.Internal.Utilities
                         t.IsAbstract == false &&
                         t.IsGenericTypeDefinition == false &&
                         t.FullName != null &&
+                        t.GetCustomAttribute(typeof(ObsoleteAttribute)) == null &&
                         type.IsAssignableFrom(t))
                     .OrderBy(t => t.FullName.ToLower())
                     .ToArray();
