@@ -6,7 +6,7 @@ namespace InspectorEssentials.Core
     {
         public string FieldName { get; }
         
-        public ConditionalPropertyAttribute(string fieldName)
+        protected ConditionalPropertyAttribute(string fieldName)
         {
             FieldName = fieldName;
         }

@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using InspectorEssentials.Core;
+﻿using InspectorEssentials.Core;
 using InspectorEssentials.Editor.Internal.ContextMenus;
 using InspectorEssentials.Editor.Internal.Utilities;
 using UnityEditor;
@@ -12,9 +11,7 @@ namespace InspectorEssentials.Editor.Attributes
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var isValid = IsValid(property);
-
-            if (!isValid)
+            if (!IsValid(property))
             {
                 DrawErrorBox(position);
                 return;
