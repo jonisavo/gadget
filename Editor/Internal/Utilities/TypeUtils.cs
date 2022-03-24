@@ -117,7 +117,7 @@ namespace InspectorEssentials.Editor.Internal.Utilities
             
             var parts = menuPath.Split('/');
             
-            return $"{parts[parts.Length - 1]} ({assemblyName})";
+            return $"{parts[parts.Length - 1]}";
         }
     }
 }
