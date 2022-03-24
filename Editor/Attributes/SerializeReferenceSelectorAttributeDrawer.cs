@@ -62,7 +62,7 @@ namespace InspectorEssentials.Editor.Attributes
             if (string.IsNullOrEmpty(fullTypeName))
                 return GetShownInvalidTypeName();
 
-            return GetShownValidTypeName(fullTypeName);
+            return TypeUtils.GetShownTypeName(fullTypeName);
         }
 
         private string GetShownInvalidTypeName()
@@ -71,26 +71,6 @@ namespace InspectorEssentials.Editor.Attributes
                 TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
                 
             return $"Select {concreteTypeName}";
-        }
-
-        private string GetShownValidTypeName(string fullTypeName)
-        {
-            var typeName = fullTypeName;
-            
-            var index = fullTypeName.LastIndexOf(' ');
-
-            if (index >= 0)
-                typeName = typeName.Substring(index + 1);
-
-            var assembly = Assembly.GetAssembly(fieldInfo.FieldType);
-
-            var type = assembly.GetType(typeName);
-
-            var menuPath = TypeUtils.GetMenuPathForType(type, TypeUtils.GetMenuPathMode.UseTypeFullName);
-            
-            var parts = menuPath.Split('/');
-            
-            return $"{parts[parts.Length - 1]} ({assembly.GetName().Name})";
         }
 
         private static bool IsValid(SerializedProperty property)

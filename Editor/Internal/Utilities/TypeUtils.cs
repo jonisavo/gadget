@@ -96,5 +96,27 @@ namespace InspectorEssentials.Editor.Internal.Utilities
 
             return type.Name;
         }
+
+        public static string GetShownTypeName(string fullTypeName)
+        {
+            var typeName = fullTypeName;
+
+            var index = fullTypeName.LastIndexOf(' ');
+
+            if (index >= 0)
+                typeName = typeName.Substring(index + 1);
+
+            var assemblyName = fullTypeName.Substring(0, index);
+
+            var assembly = Assembly.Load(assemblyName);
+
+            var type = assembly.GetType(typeName);
+
+            var menuPath = GetMenuPathForType(type, GetMenuPathMode.UseTypeFullName);
+            
+            var parts = menuPath.Split('/');
+            
+            return $"{parts[parts.Length - 1]} ({assemblyName})";
+        }
     }
 }
