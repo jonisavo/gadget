@@ -36,16 +36,16 @@ namespace InspectorEssentials.Editor.Attributes
 
         private void DrawTypeDropdownButton(Rect position, SerializedProperty property, GUIContent label)
         {
-            var typeName = GetShownTypeName(property.managedReferenceFullTypename);
-            var typeNameGUIContent = new GUIContent(typeName);
+            var buttonText = GetButtonText(property.managedReferenceFullTypename);
+            var buttonContent = new GUIContent(buttonText);
                 
-            var buttonWidth = 14f + GUI.skin.button.CalcSize(typeNameGUIContent).x;
+            var buttonWidth = 14f + GUI.skin.button.CalcSize(buttonContent).x;
             var buttonHeight = EditorGUI.GetPropertyHeight(property, label, false);
 
             var buttonX = position.x + position.width - buttonWidth;
             var buttonRect = new Rect(buttonX, position.y, buttonWidth, buttonHeight);
                 
-            if (EditorGUI.DropdownButton(buttonRect, typeNameGUIContent, FocusType.Passive))
+            if (EditorGUI.DropdownButton(buttonRect, buttonContent, FocusType.Passive))
                 ShowTypeDropdown(buttonRect, property);
         }
 
@@ -53,16 +53,16 @@ namespace InspectorEssentials.Editor.Attributes
         {
             return EditorGUI.GetPropertyHeight(property, label, true);
         }
-        
-        private string GetShownTypeName(string fullTypeName)
+
+        private string GetButtonText(string fullTypeName)
         {
             if (string.IsNullOrEmpty(fullTypeName))
-                return GetShownInvalidTypeName();
+                return GetSelectionPromptText();
 
             return TypeUtils.GetShownTypeName(fullTypeName);
         }
 
-        private string GetShownInvalidTypeName()
+        private string GetSelectionPromptText()
         {
             var concreteTypeName =
                 TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
