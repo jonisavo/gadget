@@ -43,7 +43,7 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
             Menu.AddDisabledItem(new GUIContent("No available types"));
         }
 
-        protected override Type[] GetChoices()
+        public override Type[] GetChoices()
         {
             return TypeUtils.GetConcreteTypes(FieldInfo.FieldType);
         }

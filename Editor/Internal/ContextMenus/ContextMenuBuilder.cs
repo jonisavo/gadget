@@ -26,7 +26,12 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
 
         protected abstract void BuildEmptyMenu();
 
-        protected abstract T[] GetChoices();
+        public abstract T[] GetChoices();
+
+        public void Choose(T item)
+        {
+            OnChoose(item);
+        }
 
         protected virtual void BuildMenu(IEnumerable<T> items)
         {
@@ -37,10 +42,8 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
             }
         }
 
-        public void Show(Rect position)
+        public void Show(Rect position, T[] choices)
         {
-            var choices = GetChoices();
-
             if (choices.Length == 0)
                 BuildEmptyMenu();
             else

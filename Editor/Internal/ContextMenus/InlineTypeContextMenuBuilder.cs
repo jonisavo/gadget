@@ -19,7 +19,7 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
         {
             if (!TryGetObjectFromType(type, out var objectReference))
                 return;
-            
+
             var serializedObject = Property.serializedObject;
             Property.objectReferenceValue = objectReference;
             Property.isExpanded = true;

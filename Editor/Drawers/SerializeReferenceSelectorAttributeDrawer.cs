@@ -80,8 +80,10 @@ namespace InspectorEssentials.Editor.Drawers
             var menu = new GenericMenu();
             
             var menuBuilder = new SerializeReferenceTypeContextMenuBuilder(menu, fieldInfo, property , false);
+
+            var choices = menuBuilder.GetChoices();
             
-            menuBuilder.Show(position);
+            menuBuilder.Show(position, choices);
         }
     }
 }
