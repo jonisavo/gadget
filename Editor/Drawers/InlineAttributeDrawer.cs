@@ -24,14 +24,15 @@ namespace InspectorEssentials.Editor.Drawers
 
             public readonly GUIContent CreateContent =
                 new GUIContent("Create");
+
+            public readonly float ErrorBoxHeight =
+                EditorGUIUtility.singleLineHeight + 16f;
         }
 
         private static GUIResources _guiResources;
         private static GUIResources Resources => _guiResources ??= new GUIResources();
 
         public new InlineAttribute attribute => base.attribute as InlineAttribute;
-
-        //----------------------------------------------------------------------
 
         public override bool CanCacheInspectorGUI(SerializedProperty property)
         {
@@ -43,7 +44,10 @@ namespace InspectorEssentials.Editor.Drawers
             GUIContent label)
         {
             var height = EditorGUIUtility.singleLineHeight;
-            
+
+            if (!IsValid(property))
+                return Resources.ErrorBoxHeight;
+
             if (!property.isExpanded)
                 return height;
             
@@ -73,7 +77,15 @@ namespace InspectorEssentials.Editor.Drawers
             var propertyRect = position;
             propertyRect.height = EditorGUIUtility.singleLineHeight;
 
-            DoContextMenuGUI(propertyRect, property);
+            if (!IsValid(property))
+            {
+                DoErrorBox(position);
+                return;
+            }
+
+            if (attribute.AllowInlineCreation) 
+                DoInlineCreationGUI(propertyRect, property);
+            
             DoObjectFieldGUI(propertyRect, property, label);
 
             if (property.objectReferenceValue)
@@ -83,6 +95,13 @@ namespace InspectorEssentials.Editor.Drawers
                 DrawExpandedDrawer(position, propertyRect, property);
 
             DiscardObsoleteSerializedObjectsOnNextEditorUpdate();
+        }
+
+        private void DoErrorBox(Rect position)
+        {
+            EditorGUI.HelpBox(position,
+                $"Field {fieldInfo.Name} is invalid as InlineAttribute works only on Object references.",
+                MessageType.Error);
         }
 
         private void DrawExpandedDrawer(Rect position, Rect propertyRect, SerializedProperty property)
@@ -108,22 +127,20 @@ namespace InspectorEssentials.Editor.Drawers
             }
         }
 
-        //----------------------------------------------------------------------
+        private bool IsValid(SerializedProperty property)
+        {
+            return property.propertyType == SerializedPropertyType.ObjectReference;
+        }
 
         private static int GetControlID(Rect position)
         {
             return GUIUtility.GetControlID(s_controlIdHash, FocusType.Keyboard, position);
         }
 
-        //----------------------------------------------------------------------
-
-        private void DoContextMenuGUI(
+        private void DoInlineCreationGUI(
             Rect position,
             SerializedProperty property)
         {
-            if (!attribute.AllowInlineCreation)
-                return;
-
             var controlID = GetControlID(position);
             ObjectSelector.DoGUI(controlID, property, SetObjectReferenceValue);
 
@@ -144,7 +161,7 @@ namespace InspectorEssentials.Editor.Drawers
             if (!GUI.Button(buttonRect, Resources.CreateContent, buttonStyle))
                 return;
 
-            ShowContextMenu(buttonRect, property);
+            ShowTypeMenu(buttonRect, property);
         }
 
         private static void SetObjectReferenceValue(
@@ -157,15 +174,11 @@ namespace InspectorEssentials.Editor.Drawers
             serializedObject.ApplyModifiedProperties();
         }
 
-        //----------------------------------------------------------------------
-
         private bool AllowSceneObjects(SerializedProperty property)
         {
             var asset = property.serializedObject.targetObject;
             return asset != null && !EditorUtility.IsPersistent(asset);
         }
-
-        //----------------------------------------------------------------------
 
         private void DoObjectFieldGUI(
             Rect position,
@@ -196,8 +209,6 @@ namespace InspectorEssentials.Editor.Drawers
             }
         }
 
-        //----------------------------------------------------------------------
-
         private void DoFoldoutGUI(
             Rect position,
             SerializedProperty property)
@@ -216,9 +227,7 @@ namespace InspectorEssentials.Editor.Drawers
                 property.isExpanded = isExpanded;
         }
 
-        //----------------------------------------------------------------------
-
-        private void ShowContextMenu(Rect position, SerializedProperty property)
+        private void ShowTypeMenu(Rect position, SerializedProperty property)
         {
             var types = TypeUtils.GetConcreteTypes(fieldInfo.FieldType);
 
@@ -292,8 +301,6 @@ namespace InspectorEssentials.Editor.Drawers
                 style.Draw(position, false, false, false, false);
             }
         }
-
-        //----------------------------------------------------------------------
 
         private readonly Dictionary<Object, SerializedObject> 
             _serializedObjectMap = new Dictionary<Object, SerializedObject>();
