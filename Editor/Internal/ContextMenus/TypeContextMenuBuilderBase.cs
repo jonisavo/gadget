@@ -11,7 +11,11 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
     {
         private readonly bool _useTypeFullName;
 
-        protected TypeContextMenuBuilderBase(bool useTypeFullName)
+        protected TypeContextMenuBuilderBase(
+            GenericMenu menu,
+            FieldInfo fieldInfo,
+            SerializedProperty property,
+            bool useTypeFullName) : base(menu, fieldInfo, property)
         {
             _useTypeFullName = useTypeFullName;
         }
@@ -25,42 +29,48 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
             return TypeUtils.GetMenuPathForType(type, getMenuPathMode);
         }
 
-        protected override void OnChoose(Type type, SerializedProperty property)
+        protected override void OnChoose(Type type)
         {
             throw new NotImplementedException();
         }
 
-        protected override void BuildEmptyMenu(GenericMenu menu, FieldInfo fieldInfo)
+        protected override void BuildEmptyMenu()
         {
-            AddTypeNameHeaderItem(menu, fieldInfo);
+            AddTypeNameHeaderItem();
             
-            menu.AddSeparator("");
+            Menu.AddSeparator("");
             
-            menu.AddDisabledItem(new GUIContent("No available types"));
+            Menu.AddDisabledItem(new GUIContent("No available types"));
         }
 
-        protected override Type[] GetChoices(FieldInfo fieldInfo, SerializedProperty property)
+        protected override Type[] GetChoices()
         {
-            return TypeUtils.GetConcreteTypes(fieldInfo.FieldType);
+            return TypeUtils.GetConcreteTypes(FieldInfo.FieldType);
         }
 
-        protected override void BuildMenu(
-            GenericMenu menu,
-            IEnumerable<Type> items,
-            FieldInfo fieldInfo,
-            SerializedProperty property)
+        protected override void BuildMenu(IEnumerable<Type> items)
         {
-            AddTypeNameHeaderItem(menu, fieldInfo);
+            AddTypeNameHeaderItem();
             
-            menu.AddSeparator("");
+            Menu.AddSeparator("");
             
-            base.BuildMenu(menu, items, fieldInfo, property);
+            base.BuildMenu(items);
         }
 
-        private static void AddTypeNameHeaderItem(GenericMenu menu, FieldInfo fieldInfo)
+        private void AddTypeNameHeaderItem()
         {
-            var typeName = TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
-            menu.AddDisabledItem(new GUIContent(typeName));
+            var typeName = TypeUtils.GetPrimaryConcreteTypeName(FieldInfo.FieldType);
+            
+            if (FieldInfo.FieldType.IsAbstract || FieldInfo.FieldType.IsGenericType)
+            {
+                Menu.AddDisabledItem(new GUIContent(typeName));
+            }
+            else
+            {
+                Menu.AddItem(
+                    new GUIContent(typeName), false,
+                    () => OnChoose(FieldInfo.FieldType));
+            }
         }
     }
 }

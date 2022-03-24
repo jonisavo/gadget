@@ -1,22 +1,50 @@
 ﻿using System;
+using System.Reflection;
 using InspectorEssentials.Editor.Internal.Utilities;
 using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace InspectorEssentials.Editor.Internal.ContextMenus
 {
     internal class InlineTypeContextMenuBuilder : TypeContextMenuBuilderBase
     {
-        public InlineTypeContextMenuBuilder(bool useTypeFullName) : base(useTypeFullName) {}
+        public InlineTypeContextMenuBuilder(
+            GenericMenu menu,
+            FieldInfo fieldInfo,
+            SerializedProperty property,
+            bool useTypeFullName) : base(menu, fieldInfo, property, useTypeFullName) {}
 
-        protected override void OnChoose(Type type, SerializedProperty property)
+        protected override void OnChoose(Type type)
         {
-            if (!ScriptableObjectUtils.TryCreateNewAsset(type, out var scriptableObject))
+            if (!TryGetObjectFromType(type, out var objectReference))
                 return;
             
-            var serializedObject = property.serializedObject;
-            property.objectReferenceValue = scriptableObject;
-            property.isExpanded = true;
+            var serializedObject = Property.serializedObject;
+            Property.objectReferenceValue = objectReference;
+            Property.isExpanded = true;
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private static bool TryGetObjectFromType(Type type, out Object objectReferenceValue)
+        {
+            if (typeof(ScriptableObject).IsAssignableFrom(type))
+            {
+                var success = AssetUtils.TryCreateScriptableObject(type, out var scriptableObject);
+                objectReferenceValue = scriptableObject;
+                return success;
+            }
+
+            if (typeof(Material).IsAssignableFrom(type))
+            {
+                var success = AssetUtils.TryCreateMaterial(out var material);
+                objectReferenceValue = material;
+                return success;
+            }
+
+            objectReferenceValue = null;
+
+            return false;
         }
     }
 }

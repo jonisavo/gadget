@@ -7,39 +7,46 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
 {
     internal abstract class ContextMenuBuilder<T>
     {
+        protected readonly GenericMenu Menu;
+
+        protected readonly FieldInfo FieldInfo;
+
+        protected readonly SerializedProperty Property;
+        
+        protected ContextMenuBuilder(GenericMenu menu, FieldInfo fieldInfo, SerializedProperty property)
+        {
+            Menu = menu;
+            FieldInfo = fieldInfo;
+            Property = property;
+        }
+        
         protected abstract string BuildMenuPath(T item);
 
-        protected abstract void OnChoose(T item, SerializedProperty property);
+        protected abstract void OnChoose(T item);
 
-        protected abstract void BuildEmptyMenu(GenericMenu menu, FieldInfo fieldInfo);
+        protected abstract void BuildEmptyMenu();
 
-        protected abstract T[] GetChoices(FieldInfo fieldInfo, SerializedProperty property);
+        protected abstract T[] GetChoices();
 
-        protected virtual void BuildMenu(
-            GenericMenu menu,
-            IEnumerable<T> items,
-            FieldInfo fieldInfo,
-            SerializedProperty property)
+        protected virtual void BuildMenu(IEnumerable<T> items)
         {
             foreach (var item in items)
             {
                 var content = new GUIContent(BuildMenuPath(item));
-                menu.AddItem(content, false, () => OnChoose(item, property));
+                Menu.AddItem(content, false, () => OnChoose(item));
             }
         }
 
-        public void Show(Rect position, FieldInfo fieldInfo, SerializedProperty property)
+        public void Show(Rect position)
         {
-            var menu = new GenericMenu();
-            
-            var choices = GetChoices(fieldInfo, property);
+            var choices = GetChoices();
 
             if (choices.Length == 0)
-                BuildEmptyMenu(menu, fieldInfo);
+                BuildEmptyMenu();
             else
-                BuildMenu(menu, choices, fieldInfo, property);
+                BuildMenu(choices);
 
-            menu.DropDown(position);
+            Menu.DropDown(position);
         }
     }
 }

@@ -77,9 +77,11 @@ namespace InspectorEssentials.Editor.Drawers
         
         private void ShowTypeDropdown(Rect position, SerializedProperty property)
         {
-            var menuBuilder = new SerializeReferenceTypeContextMenuBuilder(false);
+            var menu = new GenericMenu();
             
-            menuBuilder.Show(position, fieldInfo, property);
+            var menuBuilder = new SerializeReferenceTypeContextMenuBuilder(menu, fieldInfo, property , false);
+            
+            menuBuilder.Show(position);
         }
     }
 }

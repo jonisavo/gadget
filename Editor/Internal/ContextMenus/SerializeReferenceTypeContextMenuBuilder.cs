@@ -1,17 +1,22 @@
 ﻿using System;
+using System.Reflection;
 using UnityEditor;
 
 namespace InspectorEssentials.Editor.Internal.ContextMenus
 {
     internal class SerializeReferenceTypeContextMenuBuilder : TypeContextMenuBuilderBase
     {
-        public SerializeReferenceTypeContextMenuBuilder(bool useTypeFullName) : base(useTypeFullName) {}
+        public SerializeReferenceTypeContextMenuBuilder(
+            GenericMenu menu,
+            FieldInfo fieldInfo,
+            SerializedProperty property,
+            bool useTypeFullName) : base(menu, fieldInfo, property, useTypeFullName) {}
         
-        protected override void OnChoose(Type type, SerializedProperty property)
+        protected override void OnChoose(Type type)
         {
             var instance = Activator.CreateInstance(type);
-            property.managedReferenceValue = instance;
-            property.serializedObject.ApplyModifiedProperties();
+            Property.managedReferenceValue = instance;
+            Property.serializedObject.ApplyModifiedProperties();
         }
     }
 }

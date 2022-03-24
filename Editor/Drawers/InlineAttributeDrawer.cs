@@ -222,9 +222,11 @@ namespace InspectorEssentials.Editor.Drawers
         {
             var types = TypeUtils.GetConcreteTypes(fieldInfo.FieldType);
 
-            var menuBuilder = new InlineTypeContextMenuBuilder(types.Length > 16);
+            var menu = new GenericMenu();
 
-            menuBuilder.Show(position, fieldInfo, property);
+            var menuBuilder = new InlineTypeContextMenuBuilder(menu, fieldInfo, property, types.Length > 16);
+
+            menuBuilder.Show(position);
         }
 
         private float GetInlinePropertyHeight(Object target)
