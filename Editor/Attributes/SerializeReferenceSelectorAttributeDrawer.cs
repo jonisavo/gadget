@@ -30,7 +30,7 @@ namespace InspectorEssentials.Editor.Attributes
         {
             EditorGUI.HelpBox(
                 position,
-                $"Field ${fieldInfo.Name} is invalid. SerializeReferenceSelector only supports managed references.",
+                $"Field {fieldInfo.Name} is invalid. SerializeReferenceSelector only supports managed references.",
                 MessageType.Error);
         }
 
