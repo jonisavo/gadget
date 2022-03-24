@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Object = UnityEngine.Object;
 
-namespace InspectorEssentials.Editor.Internal
+namespace InspectorEssentials.Editor.Internal.Scope
 {
     internal readonly struct ObjectScope : IDisposable
     {

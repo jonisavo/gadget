@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using InspectorEssentials.Core;
-using InspectorEssentials.Editor.Internal;
 using InspectorEssentials.Editor.Internal.ContextMenus;
+using InspectorEssentials.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 

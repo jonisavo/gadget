@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace InspectorEssentials.Editor.Internal
+namespace InspectorEssentials.Editor.Internal.Utilities
 {
-    internal static class SerializedPropertyUtility
+    internal static class SerializedPropertyUtils
     {
         public static IEnumerable<SerializedProperty> 
             EnumerateChildProperties(this SerializedObject serializedObject)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using InspectorEssentials.Core;
+using InspectorEssentials.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 

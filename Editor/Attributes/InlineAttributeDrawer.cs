@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using InspectorEssentials.Core;
-using InspectorEssentials.Editor.Internal;
 using InspectorEssentials.Editor.Internal.ContextMenus;
+using InspectorEssentials.Editor.Internal.Scope;
+using InspectorEssentials.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 

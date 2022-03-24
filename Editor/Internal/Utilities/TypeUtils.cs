@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace InspectorEssentials.Editor.Internal
+namespace InspectorEssentials.Editor.Internal.Utilities
 {
     internal static class TypeUtils
     {
