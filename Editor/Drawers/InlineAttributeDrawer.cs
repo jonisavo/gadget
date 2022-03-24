@@ -14,9 +14,6 @@ namespace InspectorEssentials.Editor.Drawers
     [CustomPropertyDrawer(typeof(InlineAttribute))]
     public class InlineAttributeDrawer : PropertyDrawer
     {
-        private static readonly int s_controlIdHash =
-            nameof(InlineAttributeDrawer).GetHashCode();
-
         private sealed class GUIResources
         {
             public readonly GUIContent CreateContent =
@@ -124,14 +121,9 @@ namespace InspectorEssentials.Editor.Drawers
             }
         }
 
-        private bool IsValid(SerializedProperty property)
+        private static bool IsValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
-        }
-
-        private static int GetControlID(Rect position)
-        {
-            return GUIUtility.GetControlID(s_controlIdHash, FocusType.Keyboard, position);
         }
 
         private bool ShouldShowInlineCreation()
@@ -144,9 +136,6 @@ namespace InspectorEssentials.Editor.Drawers
             Rect position,
             SerializedProperty property)
         {
-            var controlID = GetControlID(position);
-            ObjectSelector.DoGUI(controlID, property, SetObjectReferenceValue);
-
             var buttonRect = position;
             buttonRect.xMin = buttonRect.xMax - 54;
             var buttonStyle = EditorStyles.miniButton;
@@ -245,8 +234,7 @@ namespace InspectorEssentials.Editor.Drawers
             foreach (var property in properties)
             {
                 height += spacing;
-                height += EditorGUI
-                    .GetPropertyHeight(property, includeChildren: true);
+                height += EditorGUI.GetPropertyHeight(property, true);
             }
             if (height > 0)
                 height += spacing;
@@ -269,9 +257,8 @@ namespace InspectorEssentials.Editor.Drawers
             foreach (var property in properties)
             {
                 position.y += spacing;
-                position.height =
-                    EditorGUI.GetPropertyHeight(property, includeChildren: true);
-                EditorGUI.PropertyField(position, property, includeChildren: true);
+                position.height = EditorGUI.GetPropertyHeight(property, true);
+                EditorGUI.PropertyField(position, property, true);
                 position.y += position.height;
             }
             
