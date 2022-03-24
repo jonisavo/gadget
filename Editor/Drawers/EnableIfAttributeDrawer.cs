@@ -3,7 +3,7 @@ using InspectorEssentials.Editor.Internal;
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Attributes
+namespace InspectorEssentials.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(EnableIfAttribute))]
     public class EnableIfAttributeDrawer : ConditionalBoolPropertyDrawerBase<EnableIfAttribute>

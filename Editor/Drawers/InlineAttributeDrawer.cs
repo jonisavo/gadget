@@ -9,7 +9,7 @@ using UnityEngine;
 
 using Object = UnityEngine.Object;
 
-namespace InspectorEssentials.Editor.Attributes
+namespace InspectorEssentials.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(InlineAttribute))]
     public class InlineAttributeDrawer : PropertyDrawer

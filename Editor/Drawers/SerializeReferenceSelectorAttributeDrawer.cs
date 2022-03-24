@@ -4,7 +4,7 @@ using InspectorEssentials.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Attributes
+namespace InspectorEssentials.Editor.Drawers
 {
     [CustomPropertyDrawer(typeof(SerializeReferenceSelectorAttribute))]
     public class SerializeReferenceSelectorAttributeDrawer : PropertyDrawer
