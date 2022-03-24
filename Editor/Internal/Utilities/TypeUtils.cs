@@ -35,19 +35,23 @@ namespace InspectorEssentials.Editor.Internal.Utilities
                     return e.Types.Where(t => t != null);
                 }
             });
-            concreteTypes =
-                types
-                    .Where(t =>
-                        t.IsAbstract == false &&
-                        t.IsGenericTypeDefinition == false &&
-                        t.FullName != null &&
-                        t.GetCustomAttribute(typeof(ObsoleteAttribute)) == null &&
-                        type.IsAssignableFrom(t))
-                    .OrderBy(t => t.FullName.ToLower())
-                    .ToArray();
+            concreteTypes = types
+                .Where(t => IsTypeConcrete(t) && type.IsAssignableFrom(t))
+                .OrderBy(t => t.FullName.ToLower())
+                .ToArray();
 
             ConcreteTypes.Add(type, concreteTypes);
             return concreteTypes;
+        }
+
+        public static bool IsTypeConcrete(Type type)
+        {
+            return !type.IsAbstract &&
+                   !type.IsGenericTypeDefinition &&
+                   !type.IsArray &&
+                   !type.IsSealed &&
+                   type.FullName != null &&
+                   type.GetCustomAttribute(typeof(ObsoleteAttribute)) == null;
         }
 
         public static Type GetPrimaryConcreteType(Type type)
