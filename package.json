@@ -1,6 +1,5 @@
 {
-  "name": "fi.jonisavo.inspector-essentials",
-  "version": "0.0.1",
+  "name": "io.savolainen.inspector.essentials",
   "displayName": "Inspector Essentials",
   "author": {
     "name": "Joni Savolainen",
