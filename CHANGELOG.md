@@ -1,2 +1,19 @@
-﻿## 0.1.0 [2022-03-24]
+﻿## 0.2.0 [2022-03-24]
+### `InlineAttribute`
+- Show inline creation on supported types by default
+- Replace `AllowInlineCreation` property with `DisallowInlineCreation` for the opposite effect
+- Add initial support for inline creation of Materials
+- Remove assembly name from the shown type name
+
+### `InlineAttribute` & `SerializeReferenceSelectorAttribute`
+- If only one type option exists, select it without showing a menu
+- Do not show sealed types as options
+- Do not show types marked with `[Obsolete]` as options
+- Fix type list headers breaking when the property field type is an array
+- Add error message on invalid fields
+
+### `TypeMenuPathAttribute`
+- Renamed from `TypeMenuNameAttribute`
+
+## 0.1.0 [2022-03-24]
 - Initial in-development version
