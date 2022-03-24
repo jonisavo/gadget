@@ -78,10 +78,10 @@ namespace InspectorEssentials.Editor.Internal.Utilities
             GetMenuPathMode menuPathMode = GetMenuPathMode.IgnoreTypeFullName)
         {
             var attribute =
-                type.GetCustomAttribute(typeof(TypeMenuNameAttribute));
+                type.GetCustomAttribute(typeof(TypeMenuPathAttribute));
 
-            if (attribute is TypeMenuNameAttribute typeMenuNameAttribute)
-                return typeMenuNameAttribute.MenuName;
+            if (attribute is TypeMenuPathAttribute typeMenuNameAttribute)
+                return typeMenuNameAttribute.MenuPath;
             
             attribute =
                 type.GetCustomAttribute(typeof(CreateAssetMenuAttribute));

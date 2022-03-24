@@ -3,13 +3,13 @@
 namespace InspectorEssentials.Core
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
-    public class TypeMenuNameAttribute : Attribute
+    public class TypeMenuPathAttribute : Attribute
     {
-        public readonly string MenuName;
+        public readonly string MenuPath;
 
-        public TypeMenuNameAttribute(string menuName)
+        public TypeMenuPathAttribute(string menuPath)
         {
-            MenuName = menuName;
+            MenuPath = menuPath;
         }
     }
 }
