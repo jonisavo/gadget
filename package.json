@@ -10,5 +10,6 @@
     "url": "https://savolainen.io"
   },
   "category": "editor extensions",
-  "keywords": ["attribute", "editor", "inspector"]
+  "keywords": ["attribute", "editor", "inspector"],
+  "license": "MIT"
 }
