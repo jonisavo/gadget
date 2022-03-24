@@ -30,8 +30,12 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
             throw new NotImplementedException();
         }
 
-        protected override void BuildEmptyMenu(GenericMenu menu)
+        protected override void BuildEmptyMenu(GenericMenu menu, FieldInfo fieldInfo)
         {
+            AddTypeNameHeaderItem(menu, fieldInfo);
+            
+            menu.AddSeparator("");
+            
             menu.AddDisabledItem(new GUIContent("No available types"));
         }
 
@@ -46,12 +50,17 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
             FieldInfo fieldInfo,
             SerializedProperty property)
         {
-            var typeName = TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
-            menu.AddDisabledItem(new GUIContent(typeName));
+            AddTypeNameHeaderItem(menu, fieldInfo);
             
             menu.AddSeparator("");
             
             base.BuildMenu(menu, items, fieldInfo, property);
+        }
+
+        private static void AddTypeNameHeaderItem(GenericMenu menu, FieldInfo fieldInfo)
+        {
+            var typeName = TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
+            menu.AddDisabledItem(new GUIContent(typeName));
         }
     }
 }

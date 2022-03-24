@@ -11,7 +11,7 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
 
         protected abstract void OnChoose(T item, SerializedProperty property);
 
-        protected abstract void BuildEmptyMenu(GenericMenu menu);
+        protected abstract void BuildEmptyMenu(GenericMenu menu, FieldInfo fieldInfo);
 
         protected abstract T[] GetChoices(FieldInfo fieldInfo, SerializedProperty property);
 
@@ -35,7 +35,7 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
             var choices = GetChoices(fieldInfo, property);
 
             if (choices.Length == 0)
-                BuildEmptyMenu(menu);
+                BuildEmptyMenu(menu, fieldInfo);
             else
                 BuildMenu(menu, choices, fieldInfo, property);
 
