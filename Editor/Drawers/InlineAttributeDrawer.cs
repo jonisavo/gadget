@@ -19,12 +19,9 @@ namespace InspectorEssentials.Editor.Drawers
 
         private sealed class GUIResources
         {
-            public readonly GUIStyle InDropDownStyle =
-                new GUIStyle("IN DropDown");
-
             public readonly GUIContent CreateContent =
                 new GUIContent("Create");
-
+            
             public readonly float ErrorBoxHeight =
                 EditorGUIUtility.singleLineHeight + 16f;
         }
@@ -83,7 +80,7 @@ namespace InspectorEssentials.Editor.Drawers
                 return;
             }
 
-            if (attribute.AllowInlineCreation) 
+            if (ShouldShowInlineCreation()) 
                 DoInlineCreationGUI(propertyRect, property);
             
             DoObjectFieldGUI(propertyRect, property, label);
@@ -137,6 +134,12 @@ namespace InspectorEssentials.Editor.Drawers
             return GUIUtility.GetControlID(s_controlIdHash, FocusType.Keyboard, position);
         }
 
+        private bool ShouldShowInlineCreation()
+        {
+            return !attribute.DisallowInlineCreation &&
+                   InlineUtils.DoesTypeSupportInlineCreation(fieldInfo.FieldType);
+        }
+
         private void DoInlineCreationGUI(
             Rect position,
             SerializedProperty property)
@@ -148,20 +151,12 @@ namespace InspectorEssentials.Editor.Drawers
             buttonRect.xMin = buttonRect.xMax - 54;
             var buttonStyle = EditorStyles.miniButton;
 
-            var isRepaint = Event.current.type == EventType.Repaint;
-            if (isRepaint)
-            {
-                var dropDownStyle = Resources.InDropDownStyle;
-                var rect = buttonRect;
-                rect.x += 2;
-                rect.y += 6;
-                dropDownStyle.Draw(rect, false, false, false, false);
-            }
+            var buttonPressed = GUI.Button(buttonRect, Resources.CreateContent, buttonStyle);
+            
+            EditorGUI.EndDisabledGroup();
 
-            if (!GUI.Button(buttonRect, Resources.CreateContent, buttonStyle))
-                return;
-
-            ShowTypeMenu(buttonRect, property);
+            if (buttonPressed)
+                ShowTypeMenu(buttonRect, property);
         }
 
         private static void SetObjectReferenceValue(
@@ -187,7 +182,7 @@ namespace InspectorEssentials.Editor.Drawers
         {
             label = EditorGUI.BeginProperty(position, label, property);
 
-            if (attribute.AllowInlineCreation)
+            if (ShouldShowInlineCreation())
                 position.xMax -= 54;
 
             var objectType = TypeUtils.GetPrimaryConcreteType(fieldInfo.FieldType);
@@ -203,10 +198,9 @@ namespace InspectorEssentials.Editor.Drawers
                     AllowSceneObjects(property));
 
             EditorGUI.EndProperty();
+            
             if (!ReferenceEquals(newTarget, oldTarget))
-            {
                 SetObjectReferenceValue(property, newTarget);
-            }
         }
 
         private void DoFoldoutGUI(

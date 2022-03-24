@@ -27,8 +27,13 @@ namespace InspectorEssentials.Editor.Internal.Utilities
 
             return TryCreateAsset(material, "mat");
         }
+        
+        private static bool TryCreateAsset<T>(T asset, string extension) where T : Object
+        {
+            return TryCreateAsset(typeof(T), asset, extension);
+        }
 
-        private static bool TryCreateAsset(Type type, Object asset, string extension)
+        public static bool TryCreateAsset(Type type, Object asset, string extension)
         {
             var dest = EditorUtility.SaveFilePanel($"Save {type.Name} as", Application.dataPath,
                 "New " + type.Name, extension);
@@ -56,11 +61,6 @@ namespace InspectorEssentials.Editor.Internal.Utilities
             
             AssetDatabase.Refresh();
             return true;
-        }
-
-        private static bool TryCreateAsset<T>(T asset, string extension) where T : Object
-        {
-            return TryCreateAsset(typeof(T), asset, extension);
         }
     }
 }

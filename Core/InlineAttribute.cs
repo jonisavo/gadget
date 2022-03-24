@@ -6,6 +6,6 @@ namespace InspectorEssentials.Core
     {
         public bool DisallowEditing { get; set; }
         
-        public bool AllowInlineCreation { get; set; }
+        public bool DisallowInlineCreation { get; set; }
     }
 }
