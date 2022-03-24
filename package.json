@@ -1,11 +1,14 @@
 {
   "name": "io.savolainen.inspector.essentials",
   "displayName": "Inspector Essentials",
+  "version": "0.1.0",
+  "unity": "2019.3",
+  "description": "A handful of useful attributes for the Unity Inspector.",
   "author": {
     "name": "Joni Savolainen",
     "email": "joni@savolainen.io",
     "url": "https://savolainen.io"
   },
-  "description": "A small set of attributes for the Unity Inspector.",
-  "type": "library"
+  "category": "editor extensions",
+  "keywords": ["attribute", "editor", "inspector"]
 }
