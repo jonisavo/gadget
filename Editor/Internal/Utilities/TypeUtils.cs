@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using InspectorEssentials.Core;
+using UnityEngine;
 
 namespace InspectorEssentials.Editor.Internal.Utilities
 {
@@ -62,6 +64,37 @@ namespace InspectorEssentials.Editor.Internal.Utilities
             var concreteType = GetPrimaryConcreteType(type);
 
             return concreteType.Name;
+        }
+
+        public enum GetMenuPathMode
+        {
+            IgnoreTypeFullName,
+            UseTypeFullName
+        }
+
+        public static string GetMenuPathForType(
+            Type type,
+            GetMenuPathMode menuPathMode = GetMenuPathMode.IgnoreTypeFullName)
+        {
+            var attribute =
+                type.GetCustomAttribute(typeof(TypeMenuNameAttribute));
+
+            if (attribute is TypeMenuNameAttribute typeMenuNameAttribute)
+                return typeMenuNameAttribute.MenuName;
+            
+            attribute =
+                type.GetCustomAttribute(typeof(CreateAssetMenuAttribute));
+
+            if (attribute is CreateAssetMenuAttribute createAssetMenuAttribute)
+                return createAssetMenuAttribute.menuName;
+
+            if (menuPathMode == GetMenuPathMode.UseTypeFullName &&
+                !string.IsNullOrEmpty(type.FullName))
+            {
+                return type.FullName.Replace('.', '/');
+            }
+
+            return type.Name;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using InspectorEssentials.Core;
 using InspectorEssentials.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
@@ -19,22 +18,11 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
         
         protected override string BuildMenuPath(Type type)
         {
-            var attribute =
-                type.GetCustomAttribute(typeof(TypeMenuNameAttribute));
+            var getMenuPathMode = _useTypeFullName
+                ? TypeUtils.GetMenuPathMode.UseTypeFullName
+                : TypeUtils.GetMenuPathMode.IgnoreTypeFullName;
 
-            if (attribute is TypeMenuNameAttribute typeMenuNameAttribute)
-                return typeMenuNameAttribute.MenuName;
-            
-            attribute =
-                type.GetCustomAttribute(typeof(CreateAssetMenuAttribute));
-
-            if (attribute is CreateAssetMenuAttribute createAssetMenuAttribute)
-                return createAssetMenuAttribute.menuName;
-
-            if (_useTypeFullName && !string.IsNullOrEmpty(type.FullName))
-                return type.FullName.Replace('.', '/');
-
-            return type.Name;
+            return TypeUtils.GetMenuPathForType(type, getMenuPathMode);
         }
 
         protected override void OnChoose(Type type, SerializedProperty property)
