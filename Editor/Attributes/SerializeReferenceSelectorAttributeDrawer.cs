@@ -57,18 +57,28 @@ namespace InspectorEssentials.Editor.Attributes
             return EditorGUI.GetPropertyHeight(property, label, true);
         }
         
-        private string GetShownTypeName(string typeName)
+        private string GetShownTypeName(string fullTypeName)
         {
-            if (string.IsNullOrEmpty(typeName))
-            {
-                var concreteTypeName =
-                    TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
-                
-                return $"Select {concreteTypeName}";
-            }
+            if (string.IsNullOrEmpty(fullTypeName))
+                return GetShownInvalidTypeName();
 
-            var index = typeName.LastIndexOf(' ');
+            return GetShownValidTypeName(fullTypeName);
+        }
+
+        private string GetShownInvalidTypeName()
+        {
+            var concreteTypeName =
+                TypeUtils.GetPrimaryConcreteTypeName(fieldInfo.FieldType);
+                
+            return $"Select {concreteTypeName}";
+        }
+
+        private string GetShownValidTypeName(string fullTypeName)
+        {
+            var typeName = fullTypeName;
             
+            var index = fullTypeName.LastIndexOf(' ');
+
             if (index >= 0)
                 typeName = typeName.Substring(index + 1);
 
@@ -76,20 +86,14 @@ namespace InspectorEssentials.Editor.Attributes
 
             var type = assembly.GetType(typeName);
 
-            var potentialTypeMenuAttribute =
-                type?.GetCustomAttribute(typeof(TypeMenuNameAttribute));
-
-            if (potentialTypeMenuAttribute is TypeMenuNameAttribute typeMenuNameAttribute)
-            {
-                var parts = typeMenuNameAttribute.MenuName.Split('/');
-
-                return $"{parts[parts.Length - 1]} ({assembly.GetName().Name})";
-            }
-
-            return typeName;
+            var menuPath = TypeUtils.GetMenuPathForType(type, TypeUtils.GetMenuPathMode.UseTypeFullName);
+            
+            var parts = menuPath.Split('/');
+            
+            return $"{parts[parts.Length - 1]} ({assembly.GetName().Name})";
         }
 
-        private bool IsValid(SerializedProperty property)
+        private static bool IsValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ManagedReference;
         }
