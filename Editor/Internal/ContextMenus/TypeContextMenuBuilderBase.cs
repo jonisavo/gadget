@@ -59,16 +59,16 @@ namespace InspectorEssentials.Editor.Internal.ContextMenus
 
         private void AddTypeNameHeaderItem()
         {
-            var typeName = TypeUtils.GetPrimaryConcreteTypeName(FieldInfo.FieldType);
-            
-            if (FieldInfo.FieldType.IsAbstract || FieldInfo.FieldType.IsGenericType)
+            var concreteType = TypeUtils.GetPrimaryConcreteType(FieldInfo.FieldType);
+
+            if (concreteType.IsAbstract || concreteType.IsGenericType)
             {
-                Menu.AddDisabledItem(new GUIContent(typeName));
+                Menu.AddDisabledItem(new GUIContent(concreteType.Name));
             }
             else
             {
                 Menu.AddItem(
-                    new GUIContent(typeName), false,
+                    new GUIContent(concreteType.Name), false,
                     () => OnChoose(FieldInfo.FieldType));
             }
         }
