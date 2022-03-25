@@ -222,6 +222,8 @@ namespace InspectorEssentials.Editor.Drawers
                 menuBuilder.Choose(types[0]);
             else
                 menuBuilder.Show(position, types);
+            
+            GUIUtility.ExitGUI();
         }
 
         private float GetInlinePropertyHeight(Object target)
