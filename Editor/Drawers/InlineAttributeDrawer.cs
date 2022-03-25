@@ -21,12 +21,14 @@ namespace InspectorEssentials.Editor.Drawers
             
             public readonly float ErrorBoxHeight =
                 EditorGUIUtility.singleLineHeight + 16f;
+
+            public readonly float CreateButtonWidth = 54f;
         }
 
         private static GUIResources _guiResources;
         private static GUIResources Resources => _guiResources ??= new GUIResources();
 
-        public new InlineAttribute attribute => base.attribute as InlineAttribute;
+        private InlineAttribute Attribute => attribute as InlineAttribute;
 
         public override bool CanCacheInspectorGUI(SerializedProperty property)
         {
@@ -110,13 +112,14 @@ namespace InspectorEssentials.Editor.Drawers
                 if (!targetExists || ObjectScope.Contains(target))
                     return;
                 
-                var inlineRect = position;
-                inlineRect.yMin = propertyRect.yMax;
                 var spacing = EditorGUIUtility.standardVerticalSpacing;
-                inlineRect.xMin += 2;
-                inlineRect.xMax -= 18;
-                inlineRect.yMin += spacing;
-                inlineRect.yMax -= 1;
+                var inlineRect = new Rect(position)
+                {
+                    xMin = position.xMin + 2,
+                    xMax = position.xMax - 18,
+                    yMin = propertyRect.yMax + spacing,
+                    yMax = position.yMax - 1
+                };
                 DoInlinePropertyGUI(inlineRect, target);
             }
         }
@@ -128,7 +131,7 @@ namespace InspectorEssentials.Editor.Drawers
 
         private bool ShouldShowInlineCreation()
         {
-            return !attribute.DisallowInlineCreation &&
+            return !Attribute.DisallowInlineCreation &&
                    InlineUtils.DoesTypeSupportInlineCreation(fieldInfo.FieldType);
         }
 
@@ -137,14 +140,10 @@ namespace InspectorEssentials.Editor.Drawers
             SerializedProperty property)
         {
             var buttonRect = position;
-            buttonRect.xMin = buttonRect.xMax - 54;
+            buttonRect.xMin = buttonRect.xMax - Resources.CreateButtonWidth;
             var buttonStyle = EditorStyles.miniButton;
 
-            var buttonPressed = GUI.Button(buttonRect, Resources.CreateContent, buttonStyle);
-            
-            EditorGUI.EndDisabledGroup();
-
-            if (buttonPressed)
+            if (GUI.Button(buttonRect, Resources.CreateContent, buttonStyle)) 
                 ShowTypeMenu(buttonRect, property);
         }
 
@@ -172,7 +171,7 @@ namespace InspectorEssentials.Editor.Drawers
             label = EditorGUI.BeginProperty(position, label, property);
 
             if (ShouldShowInlineCreation())
-                position.xMax -= 54;
+                position.xMax -= Resources.CreateButtonWidth;
 
             var objectType = TypeUtils.GetPrimaryConcreteType(fieldInfo.FieldType);
 
@@ -254,7 +253,7 @@ namespace InspectorEssentials.Editor.Drawers
             position.xMax -= 5;
             position.yMin += 1;
             position.yMax -= 1;
-            EditorGUI.BeginDisabledGroup(attribute.DisallowEditing);
+            EditorGUI.BeginDisabledGroup(Attribute.DisallowEditing);
             
             foreach (var property in properties)
             {
@@ -266,15 +265,13 @@ namespace InspectorEssentials.Editor.Drawers
             
             EditorGUI.EndDisabledGroup();
             
-            if (!attribute.DisallowEditing)
+            if (!Attribute.DisallowEditing)
                 serializedObject.ApplyModifiedProperties();
         }
 
         private static void DrawInlineBackground(Rect position)
         {
-            var isRepaint = Event.current.type == EventType.Repaint;
-            
-            if (!isRepaint)
+            if (Event.current.type != EventType.Repaint)
                 return;
             
             // var style = new GUIStyle("ProgressBarBack");
