@@ -1,4 +1,14 @@
-﻿## 0.2.0 [2022-03-24]
+﻿## 0.2.1 [2022-03-25]
+
+- Document the public API
+
+### `InlineAttribute`
+- Fix InvalidOperationException after selecting asset
+
+### `InlineAttribute` & `SerializeReferenceSelectorAttribute`
+- Fix structs not showing up in type lists
+
+## 0.2.0 [2022-03-24]
 ### `InlineAttribute`
 - Show inline creation on supported types by default
 - Replace `AllowInlineCreation` property with `DisallowInlineCreation` for the opposite effect
