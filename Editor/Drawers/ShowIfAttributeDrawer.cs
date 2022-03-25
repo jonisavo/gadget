@@ -18,7 +18,8 @@ namespace InspectorEssentials.Editor.Drawers
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            TryGetBooleanField(property, out var shouldShow);
+            if (!TryGetBooleanField(property, out var shouldShow))
+                return WarningInfoBoxHeight;
 
             if (!shouldShow)
                 return 0f;
