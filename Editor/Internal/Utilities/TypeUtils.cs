@@ -46,10 +46,12 @@ namespace InspectorEssentials.Editor.Internal.Utilities
 
         public static bool IsTypeConcrete(Type type)
         {
+            var typeIsSealedClass = type.IsClass && type.IsSealed;
+            
             return !type.IsAbstract &&
                    !type.IsGenericTypeDefinition &&
                    !type.IsArray &&
-                   !type.IsSealed &&
+                   !typeIsSealedClass &&
                    type.FullName != null &&
                    type.GetCustomAttribute(typeof(ObsoleteAttribute)) == null;
         }
