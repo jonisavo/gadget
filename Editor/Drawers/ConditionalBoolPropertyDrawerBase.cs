@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace InspectorEssentials.Editor.Drawers
 {
+    /// <summary>
+    /// Used internally as a base drawer class for conditional properties.
+    /// </summary>
+    /// <typeparam name="T">ConditionalPropertyAttribute type</typeparam>
     public abstract class ConditionalBoolPropertyDrawerBase<T> : PropertyDrawer
         where T : ConditionalPropertyAttribute
     {
@@ -71,7 +75,9 @@ namespace InspectorEssentials.Editor.Drawers
                 height = WarningInfoBoxHeight
             };
                 
-            EditorGUI.HelpBox(helpBoxPosition, $"Field {FieldName} not found or is not a boolean", MessageType.Error);
+            EditorGUI.HelpBox(helpBoxPosition,
+                $"Field {FieldName} not found or is not a boolean",
+                MessageType.Error);
             return WarningInfoBoxHeight;
         }
     }
