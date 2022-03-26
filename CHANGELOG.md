@@ -1,4 +1,12 @@
-﻿## 0.2.1 [2022-03-25]
+﻿## 0.3.0 [2022-03-26]
+
+### `ShowIfAttribute` & `EnableIfAttribute`
+- Add support for properties and methods
+
+### `ShowIfAttribute`
+- Fix error box not being drawn correctly if the attribute is given an invalid member name
+
+## 0.2.1 [2022-03-25]
 
 - Document the public API
 
