@@ -4,6 +4,7 @@
     /// When used on a field, it is marked as enabled if the given boolean
     /// field is true.
     /// If the field name is prefixed with a !, the boolean field must be false.
+    /// Works on properties and methods as well, regardless of their visibility.
     /// </summary>
     /// <example>
     /// <code>
@@ -12,10 +13,18 @@
     /// public Transform playerPosition;
     /// [EnableIf("!followPlayer")
     /// public bool goShopping;
+    /// public bool IsActive => gameObject.activeInHierarchy;
+    /// private static bool IsHappyHour()
+    /// {
+    ///     var hour = DateTime.Now.Hour;
+    ///     return hour == 21 || hour == 22;   
+    /// }
+    /// [EnableIf("IsHappyHour")]
+    /// public bool happyHourBooleanField;
     /// </code>
     /// </example>
     public class EnableIfAttribute : ConditionalPropertyAttribute
     {
-        public EnableIfAttribute(string fieldName) : base(fieldName) {}
+        public EnableIfAttribute(string memberName) : base(memberName) {}
     }
 }

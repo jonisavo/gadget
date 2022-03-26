@@ -1,4 +1,5 @@
 ﻿using InspectorEssentials.Core;
+using InspectorEssentials.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,15 +12,15 @@ namespace InspectorEssentials.Editor.Drawers
     public abstract class ConditionalBoolPropertyDrawerBase<T> : PropertyDrawer
         where T : ConditionalPropertyAttribute
     {
-        private const float WarningInfoBoxHeight = 32f;
+        protected const float WarningInfoBoxHeight = 32f;
         
-        private string FieldName
+        private string MemberName
         {
             get
             {
                 var propertyAttribute = (T) attribute;
 
-                var fieldName = propertyAttribute.FieldName;
+                var fieldName = propertyAttribute.MemberName;
 
                 if (fieldName[0] == '!')
                     fieldName = fieldName.Remove(0, 1);
@@ -34,7 +35,7 @@ namespace InspectorEssentials.Editor.Drawers
             {
                 var propertyAttribute = (T) attribute;
 
-                return propertyAttribute.FieldName[0] == '!';
+                return propertyAttribute.MemberName[0] == '!';
             }
         }
         
@@ -52,15 +53,36 @@ namespace InspectorEssentials.Editor.Drawers
         {
             value = true;
 
-            if (string.IsNullOrEmpty(FieldName))
+            if (string.IsNullOrEmpty(MemberName))
                 return false;
 
-            var boolProperty = property.serializedObject.FindProperty(FieldName);
+            var boolProperty = property.serializedObject.FindProperty(MemberName);
 
-            if (boolProperty == null || boolProperty.propertyType != SerializedPropertyType.Boolean)
+            if (boolProperty == null)
+                return TryGetBooleanValueFromTargetMember(property, out value);
+
+            if (boolProperty.propertyType != SerializedPropertyType.Boolean)
                 return false;
 
             value = boolProperty.boolValue;
+
+            if (Inverted)
+                value = !value;
+
+            return true;
+        }
+
+        private bool TryGetBooleanValueFromTargetMember(SerializedProperty property, out bool value)
+        {
+            value = true;
+
+            var targetObject = property.serializedObject.targetObject;
+
+            if (targetObject == null)
+                return false;
+
+            if (!TypeUtils.TryGetValueFromMethodOrPropertyOfObject(targetObject, MemberName, out value))
+                return false;
 
             if (Inverted)
                 value = !value;
@@ -76,7 +98,7 @@ namespace InspectorEssentials.Editor.Drawers
             };
                 
             EditorGUI.HelpBox(helpBoxPosition,
-                $"Field {FieldName} not found or is not a boolean",
+                $"Field {MemberName} not found or is not a boolean",
                 MessageType.Error);
             return WarningInfoBoxHeight;
         }

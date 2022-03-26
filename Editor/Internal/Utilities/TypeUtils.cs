@@ -9,9 +9,9 @@ namespace InspectorEssentials.Editor.Internal.Utilities
 {
     internal static class TypeUtils
     {
-        private static readonly Dictionary<Type, Type[]> 
+        private static readonly Dictionary<Type, Type[]>
             ConcreteTypes = new Dictionary<Type, Type[]>();
-        
+
         public static Type[] GetConcreteTypes(Type type)
         {
             if (type.IsArray)
@@ -19,7 +19,7 @@ namespace InspectorEssentials.Editor.Internal.Utilities
 
             if (type == null)
                 return Array.Empty<Type>();
-            
+
             if (ConcreteTypes.TryGetValue(type, out var concreteTypes))
                 return concreteTypes;
 
@@ -47,7 +47,7 @@ namespace InspectorEssentials.Editor.Internal.Utilities
         public static bool IsTypeConcrete(Type type)
         {
             var typeIsSealedClass = type.IsClass && type.IsSealed;
-            
+
             return !type.IsAbstract &&
                    !type.IsGenericTypeDefinition &&
                    !type.IsArray &&
@@ -88,7 +88,7 @@ namespace InspectorEssentials.Editor.Internal.Utilities
 
             if (attribute is TypeMenuPathAttribute typeMenuNameAttribute)
                 return typeMenuNameAttribute.MenuPath;
-            
+
             attribute =
                 type.GetCustomAttribute(typeof(CreateAssetMenuAttribute));
 
@@ -120,10 +120,82 @@ namespace InspectorEssentials.Editor.Internal.Utilities
             var type = assembly.GetType(typeName);
 
             var menuPath = GetMenuPathForType(type, GetMenuPathMode.UseTypeFullName);
-            
+
             var parts = menuPath.Split('/');
-            
+
             return $"{parts[parts.Length - 1]}";
+        }
+
+        private const BindingFlags MemberBindingFlags =
+            BindingFlags.Instance | BindingFlags.Static |
+            BindingFlags.Public | BindingFlags.NonPublic;
+
+        public static bool TryGetValueFromMethodOrPropertyOfObject<T>(object obj, string memberName, out T result)
+        {
+            result = default;
+
+            var targetObjectType = obj.GetType();
+
+            var memberInfo = targetObjectType.GetMember(
+                memberName,
+                MemberTypes.Method | MemberTypes.Property,
+                MemberBindingFlags
+            );
+
+            foreach (var member in memberInfo)
+            {
+                return member.MemberType switch
+                {
+                    MemberTypes.Method => TryInvokeMethodOfObject(obj, memberName, out result),
+                    MemberTypes.Property => TryInvokePropertyOfObject(obj, memberName, out result),
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+            }
+
+            return false;
+        }
+
+        private static bool TryInvokeMethodOfObject<T>(object obj, string name, out T result)
+        {
+            result = default;
+
+            var objectType = obj.GetType();
+
+            var method = objectType.GetMethod(name, MemberBindingFlags);
+
+            if (method == null || method.ReturnType != typeof(T))
+                return false;
+
+            result = (T) method.Invoke(obj, null);
+
+            return true;
+        }
+
+        private static bool TryInvokePropertyOfObject<T>(object obj, string name, out T result)
+        {
+            result = default;
+            
+            var objectType = obj.GetType();
+            
+            var objectProperty = objectType.GetProperty(name, MemberBindingFlags);
+
+            if (objectProperty == null ||
+                !objectProperty.CanRead ||
+                objectProperty.PropertyType != typeof(bool))
+            {
+                return false;
+            }
+
+            var accessors = objectProperty.GetAccessors(true)
+                .Where(accessor => accessor.ReturnType == typeof(T))
+                .ToArray();
+
+            if (accessors.Length == 0)
+                return false;
+
+            result = (T) accessors[0].Invoke(obj, null);
+
+            return true;
         }
     }
 }

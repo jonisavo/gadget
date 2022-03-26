@@ -7,11 +7,11 @@ namespace InspectorEssentials.Core
     /// </summary>
     public abstract class ConditionalPropertyAttribute : PropertyAttribute
     {
-        public string FieldName { get; }
+        public string MemberName { get; }
         
-        protected ConditionalPropertyAttribute(string fieldName)
+        protected ConditionalPropertyAttribute(string memberName)
         {
-            FieldName = fieldName;
+            MemberName = memberName;
         }
     }
 }
