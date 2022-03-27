@@ -32,7 +32,7 @@ namespace Gadget.Editor.DrawerExtensions
         }
         
         /// <summary>
-        /// By default, <see cref="BasePropertyDrawer"/> draws a single
+        /// By default, <see cref="GadgetPropertyDrawer"/> draws a single
         /// property field. A PropertyDrawerExtension is able to override it
         /// in this function and should return <c>true</c> if it does so.
         /// </summary>

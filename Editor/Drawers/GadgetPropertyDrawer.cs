@@ -14,7 +14,7 @@ namespace Gadget.Editor.Drawers
     /// <seealso cref="PropertyDrawerExtension{T}"/>
     /// <seealso cref="GadgetPropertyAttribute"/>
     [CustomPropertyDrawer(typeof(GadgetPropertyAttribute), true)]
-    public class BasePropertyDrawer : PropertyDrawer
+    public class GadgetPropertyDrawer : PropertyDrawer
     {
         private const float WarningInfoBoxBottomPadding = 2f;
         
