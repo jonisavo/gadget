@@ -8,12 +8,12 @@ using UnityEngine;
 namespace Gadget.Editor.Drawers
 {
     /// <summary>
-    /// Used as the drawer for each <see cref="BasePropertyAttribute"/>.
+    /// Used as the drawer for each <see cref="GadgetPropertyAttribute"/>.
     /// GUI drawing methods are implemented in each attribute's <see cref="PropertyDrawerExtension{T}"/>.
     /// </summary>
     /// <seealso cref="PropertyDrawerExtension{T}"/>
-    /// <seealso cref="BasePropertyAttribute"/>
-    [CustomPropertyDrawer(typeof(BasePropertyAttribute), true)]
+    /// <seealso cref="GadgetPropertyAttribute"/>
+    [CustomPropertyDrawer(typeof(GadgetPropertyAttribute), true)]
     public class BasePropertyDrawer : PropertyDrawer
     {
         private const float WarningInfoBoxBottomPadding = 2f;

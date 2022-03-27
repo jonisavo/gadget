@@ -5,7 +5,7 @@ namespace Gadget.Editor.DrawerExtensions
 {
     public class ShowIfDrawerExtension : ConditionalPropertyDrawerExtensionBase<ShowIfAttribute>
     {
-        public ShowIfDrawerExtension(BasePropertyAttribute attribute) : base(attribute) {}
+        public ShowIfDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
         public override bool IsVisible(SerializedProperty property)
         {

@@ -9,5 +9,5 @@
     /// private Vector3 _currentPosition;
     /// </code>
     /// </example>
-    public class DisabledAttribute : BasePropertyAttribute {}
+    public class DisabledAttribute : GadgetPropertyAttribute {}
 }

@@ -36,7 +36,7 @@ namespace Gadget.Core
     /// </code>
     /// </example>
     /// <seealso cref="TypeMenuPathAttribute"/>
-    public class InlineAttribute : BasePropertyAttribute
+    public class InlineAttribute : GadgetPropertyAttribute
     {
         public bool DisallowEditing { get; set; }
         

@@ -14,7 +14,7 @@ namespace Gadget.Editor.DrawerExtensions
 {
     public class InlineDrawerExtension : PropertyDrawerExtension<InlineAttribute>
     {
-        public InlineDrawerExtension(BasePropertyAttribute attribute) : base(attribute) {}
+        public InlineDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
         
         private sealed class GUIResources
         {

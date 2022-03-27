@@ -9,7 +9,7 @@ namespace Gadget.Editor.DrawerExtensions
 {
     public class SerializeReferenceSelectorExtension : PropertyDrawerExtension<SerializeReferenceSelectorAttribute>
     {
-        public SerializeReferenceSelectorExtension(BasePropertyAttribute attribute) : base(attribute) {}
+        public SerializeReferenceSelectorExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
         
         public override void OnPreGUI(DrawerExtensionCallbackInfo info)
         {

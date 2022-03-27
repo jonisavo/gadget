@@ -49,5 +49,5 @@ namespace Gadget.Core
     /// </example>
     /// <seealso cref="SerializeReference"/>
     /// <seealso cref="TypeMenuPathAttribute"/>
-    public class SerializeReferenceSelectorAttribute : BasePropertyAttribute {}
+    public class SerializeReferenceSelectorAttribute : GadgetPropertyAttribute {}
 }

@@ -5,7 +5,7 @@ namespace Gadget.Editor.DrawerExtensions
 {
     public class EnableIfDrawerExtension : ConditionalPropertyDrawerExtensionBase<EnableIfAttribute>
     {
-        public EnableIfDrawerExtension(BasePropertyAttribute attribute) : base(attribute) {}
+        public EnableIfDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
         public override bool IsEnabled(SerializedProperty property)
         {

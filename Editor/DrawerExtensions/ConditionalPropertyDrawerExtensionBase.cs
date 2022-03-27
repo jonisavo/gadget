@@ -12,7 +12,7 @@ namespace Gadget.Editor.DrawerExtensions
     public abstract class ConditionalPropertyDrawerExtensionBase<T> : PropertyDrawerExtension<T>
         where T : ConditionalPropertyAttribute
     {
-        protected ConditionalPropertyDrawerExtensionBase(BasePropertyAttribute attribute) : base(attribute) {}
+        protected ConditionalPropertyDrawerExtensionBase(GadgetPropertyAttribute attribute) : base(attribute) {}
 
         private new T Attribute => base.Attribute as T;
         

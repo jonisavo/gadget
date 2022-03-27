@@ -13,9 +13,9 @@ namespace Gadget.Editor.DrawerExtensions
     /// </summary>
     public abstract class PropertyDrawerExtensionBase
     {
-        protected readonly BasePropertyAttribute Attribute;
+        protected readonly GadgetPropertyAttribute Attribute;
 
-        protected PropertyDrawerExtensionBase(BasePropertyAttribute attribute)
+        protected PropertyDrawerExtensionBase(GadgetPropertyAttribute attribute)
         {
             Attribute = attribute;
         }
