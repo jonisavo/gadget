@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using InspectorEssentials.Core;
 using InspectorEssentials.Editor.Internal.ContextMenus;
 using InspectorEssentials.Editor.Internal.Scope;
@@ -9,18 +10,16 @@ using UnityEngine;
 
 using Object = UnityEngine.Object;
 
-namespace InspectorEssentials.Editor.Drawers
+namespace InspectorEssentials.Editor.DrawerExtensions
 {
-    [CustomPropertyDrawer(typeof(InlineAttribute))]
-    public class InlineAttributeDrawer : PropertyDrawer
+    public class InlineDrawerExtension : PropertyDrawerExtension<InlineAttribute>
     {
+        public InlineDrawerExtension(BasePropertyAttribute attribute) : base(attribute) {}
+        
         private sealed class GUIResources
         {
             public readonly GUIContent CreateContent =
                 new GUIContent("Create");
-            
-            public readonly float ErrorBoxHeight =
-                EditorGUIUtility.singleLineHeight + 16f;
 
             public readonly float CreateButtonWidth = 54f;
         }
@@ -28,24 +27,25 @@ namespace InspectorEssentials.Editor.Drawers
         private static GUIResources _guiResources;
         private static GUIResources Resources => _guiResources ??= new GUIResources();
 
-        private InlineAttribute Attribute => attribute as InlineAttribute;
-
         public override bool CanCacheInspectorGUI(SerializedProperty property)
         {
             return false;
         }
 
-        public override float GetPropertyHeight(
-            SerializedProperty property,
-            GUIContent label)
+        public override bool TryOverrideHeight(
+            float currentHeight,
+            DrawerExtensionCallbackInfo info,
+            out float newHeight)
         {
-            var height = EditorGUIUtility.singleLineHeight;
+            newHeight = currentHeight;
 
-            if (!IsValid(property))
-                return Resources.ErrorBoxHeight;
+            var property = info.Property;
 
             if (!property.isExpanded)
-                return height;
+                return false;
+
+            if (!IsPropertyValid(property))
+                return false;
             
             var serializedObject = property.serializedObject;
             var asset = serializedObject.targetObject;
@@ -55,49 +55,38 @@ namespace InspectorEssentials.Editor.Drawers
                 var targetExists = target != null;
                 
                 if (!targetExists || ObjectScope.Contains(target))
-                    return height;
+                    return true;
                 
                 var spacing = EditorGUIUtility.standardVerticalSpacing;
-                height += spacing;
-                height += GetInlinePropertyHeight(target);
-                height += 1;
+                newHeight += spacing;
+                newHeight += GetInlinePropertyHeight(target);
+                newHeight += 1;
             }
-            return height;
+            return true;
         }
 
-        public override void OnGUI(
-            Rect position,
-            SerializedProperty property,
-            GUIContent label)
+        public override bool TryOverrideMainGUI(DrawerExtensionCallbackInfo info)
         {
-            var propertyRect = position;
+            if (!IsPropertyValid(info.Property))
+                return false;
+            
+            var propertyRect = info.Position;
             propertyRect.height = EditorGUIUtility.singleLineHeight;
 
-            if (!IsValid(property))
-            {
-                DoErrorBox(position);
-                return;
-            }
-
-            if (ShouldShowInlineCreation()) 
-                DoInlineCreationGUI(propertyRect, property);
+            if (ShouldShowInlineCreation(info.FieldInfo)) 
+                DoInlineCreationGUI(propertyRect, info);
             
-            DoObjectFieldGUI(propertyRect, property, label);
+            DoObjectFieldGUI(propertyRect, info);
 
-            if (property.objectReferenceValue)
-                DoFoldoutGUI(propertyRect, property);
+            if (info.Property.objectReferenceValue)
+                DoFoldoutGUI(propertyRect, info.Property);
 
-            if (property.isExpanded)
-                DrawExpandedDrawer(position, propertyRect, property);
+            if (info.Property.isExpanded)
+                DrawExpandedDrawer(info.Position, propertyRect, info.Property);
 
             DiscardObsoleteSerializedObjectsOnNextEditorUpdate();
-        }
 
-        private void DoErrorBox(Rect position)
-        {
-            EditorGUI.HelpBox(position,
-                $"Field {fieldInfo.Name} is invalid as InlineAttribute works only on Object references.",
-                MessageType.Error);
+            return true;
         }
 
         private void DrawExpandedDrawer(Rect position, Rect propertyRect, SerializedProperty property)
@@ -124,27 +113,32 @@ namespace InspectorEssentials.Editor.Drawers
             }
         }
 
-        private static bool IsValid(SerializedProperty property)
+        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        {
+            errorMessage = $"Field {fieldInfo.Name} is invalid as InlineAttribute works only on Object references.";
+            return !IsPropertyValid(property);
+        }
+
+        private static bool IsPropertyValid(SerializedProperty property)
         {
             return property.propertyType == SerializedPropertyType.ObjectReference;
         }
-
-        private bool ShouldShowInlineCreation()
+        
+        private bool ShouldShowInlineCreation(FieldInfo fieldInfo)
         {
-            return !Attribute.DisallowInlineCreation &&
+            var inlineAttribute = (InlineAttribute) Attribute;
+            return !inlineAttribute.DisallowInlineCreation &&
                    InlineUtils.DoesTypeSupportInlineCreation(fieldInfo.FieldType);
         }
 
-        private void DoInlineCreationGUI(
-            Rect position,
-            SerializedProperty property)
+        private static void DoInlineCreationGUI(Rect position, DrawerExtensionCallbackInfo info)
         {
             var buttonRect = position;
             buttonRect.xMin = buttonRect.xMax - Resources.CreateButtonWidth;
             var buttonStyle = EditorStyles.miniButton;
 
             if (GUI.Button(buttonRect, Resources.CreateContent, buttonStyle)) 
-                ShowTypeMenu(buttonRect, property);
+                ShowTypeMenu(buttonRect, info);
         }
 
         private static void SetObjectReferenceValue(
@@ -157,25 +151,22 @@ namespace InspectorEssentials.Editor.Drawers
             serializedObject.ApplyModifiedProperties();
         }
 
-        private bool AllowSceneObjects(SerializedProperty property)
+        private static bool AllowSceneObjects(SerializedProperty property)
         {
             var asset = property.serializedObject.targetObject;
             return asset != null && !EditorUtility.IsPersistent(asset);
         }
 
-        private void DoObjectFieldGUI(
-            Rect position,
-            SerializedProperty property,
-            GUIContent label)
+        private void DoObjectFieldGUI(Rect position, DrawerExtensionCallbackInfo info)
         {
-            label = EditorGUI.BeginProperty(position, label, property);
+            var label = EditorGUI.BeginProperty(position, info.Content, info.Property);
 
-            if (ShouldShowInlineCreation())
+            if (ShouldShowInlineCreation(info.FieldInfo))
                 position.xMax -= Resources.CreateButtonWidth;
 
-            var objectType = TypeUtils.GetPrimaryConcreteType(fieldInfo.FieldType);
+            var objectType = TypeUtils.GetPrimaryConcreteType(info.FieldInfo.FieldType);
 
-            var oldTarget = property.objectReferenceValue;
+            var oldTarget = info.Property.objectReferenceValue;
             
             var newTarget =
                 EditorGUI.ObjectField(
@@ -183,15 +174,15 @@ namespace InspectorEssentials.Editor.Drawers
                     label,
                     oldTarget,
                     objectType,
-                    AllowSceneObjects(property));
+                    AllowSceneObjects(info.Property));
 
             EditorGUI.EndProperty();
             
             if (!ReferenceEquals(newTarget, oldTarget))
-                SetObjectReferenceValue(property, newTarget);
+                SetObjectReferenceValue(info.Property, newTarget);
         }
 
-        private void DoFoldoutGUI(
+        private static void DoFoldoutGUI(
             Rect position,
             SerializedProperty property)
         {
@@ -209,13 +200,13 @@ namespace InspectorEssentials.Editor.Drawers
                 property.isExpanded = isExpanded;
         }
 
-        private void ShowTypeMenu(Rect position, SerializedProperty property)
+        private static void ShowTypeMenu(Rect position, DrawerExtensionCallbackInfo info)
         {
-            var types = TypeUtils.GetConcreteTypes(fieldInfo.FieldType);
+            var types = TypeUtils.GetConcreteTypes(info.FieldInfo.FieldType);
 
             var menu = new GenericMenu();
 
-            var menuBuilder = new InlineTypeContextMenuBuilder(menu, fieldInfo, property, types.Length > 16);
+            var menuBuilder = new InlineTypeContextMenuBuilder(menu, info.FieldInfo, info.Property, types.Length > 16);
 
             if (types.Length == 1)
                 menuBuilder.Choose(types[0]);
@@ -253,7 +244,10 @@ namespace InspectorEssentials.Editor.Drawers
             position.xMax -= 5;
             position.yMin += 1;
             position.yMax -= 1;
-            EditorGUI.BeginDisabledGroup(Attribute.DisallowEditing);
+            var inlineAttribute = (InlineAttribute) Attribute;
+            EditorGUI.BeginDisabledGroup(inlineAttribute.DisallowEditing);
+            
+            EditorGUI.BeginChangeCheck();
             
             foreach (var property in properties)
             {
@@ -265,7 +259,7 @@ namespace InspectorEssentials.Editor.Drawers
             
             EditorGUI.EndDisabledGroup();
             
-            if (!Attribute.DisallowEditing)
+            if (EditorGUI.EndChangeCheck() && !inlineAttribute.DisallowEditing)
                 serializedObject.ApplyModifiedProperties();
         }
 

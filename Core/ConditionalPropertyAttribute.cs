@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-
-namespace InspectorEssentials.Core
+﻿namespace InspectorEssentials.Core
 {
     /// <summary>
     /// Used internally as a base class for conditional PropertyAttributes.
     /// </summary>
-    public abstract class ConditionalPropertyAttribute : PropertyAttribute
+    public abstract class ConditionalPropertyAttribute : BasePropertyAttribute
     {
         public string MemberName { get; }
         

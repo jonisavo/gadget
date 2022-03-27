@@ -49,5 +49,5 @@ namespace InspectorEssentials.Core
     /// </example>
     /// <seealso cref="SerializeReference"/>
     /// <seealso cref="TypeMenuPathAttribute"/>
-    public class SerializeReferenceSelectorAttribute : PropertyAttribute {}
+    public class SerializeReferenceSelectorAttribute : BasePropertyAttribute {}
 }

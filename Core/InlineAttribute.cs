@@ -36,7 +36,7 @@ namespace InspectorEssentials.Core
     /// </code>
     /// </example>
     /// <seealso cref="TypeMenuPathAttribute"/>
-    public class InlineAttribute : PropertyAttribute
+    public class InlineAttribute : BasePropertyAttribute
     {
         public bool DisallowEditing { get; set; }
         

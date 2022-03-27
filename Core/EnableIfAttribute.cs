@@ -4,7 +4,7 @@
     /// When used on a field, it is marked as enabled if the given boolean
     /// field is true.
     /// If the field name is prefixed with a !, the boolean field must be false.
-    /// Works on properties and methods as well, regardless of their visibility.
+    /// Works on properties and methods as well.
     /// </summary>
     /// <example>
     /// <code>

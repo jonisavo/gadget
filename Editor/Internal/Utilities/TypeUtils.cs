@@ -130,7 +130,7 @@ namespace InspectorEssentials.Editor.Internal.Utilities
             BindingFlags.Instance | BindingFlags.Static |
             BindingFlags.Public | BindingFlags.NonPublic;
 
-        public static bool TryGetValueFromMethodOrPropertyOfObject<T>(object obj, string memberName, out T result)
+        public static bool TryGetValueFromMemberOfObject<T>(object obj, string memberName, out T result)
         {
             result = default;
 
@@ -138,7 +138,7 @@ namespace InspectorEssentials.Editor.Internal.Utilities
 
             var memberInfo = targetObjectType.GetMember(
                 memberName,
-                MemberTypes.Method | MemberTypes.Property,
+                MemberTypes.Method | MemberTypes.Property | MemberTypes.Field,
                 MemberBindingFlags
             );
 
@@ -146,6 +146,7 @@ namespace InspectorEssentials.Editor.Internal.Utilities
             {
                 return member.MemberType switch
                 {
+                    MemberTypes.Field => TryGetFieldOfObject(obj, memberName, out result),
                     MemberTypes.Method => TryInvokeMethodOfObject(obj, memberName, out result),
                     MemberTypes.Property => TryInvokePropertyOfObject(obj, memberName, out result),
                     _ => throw new ArgumentOutOfRangeException()
@@ -153,6 +154,22 @@ namespace InspectorEssentials.Editor.Internal.Utilities
             }
 
             return false;
+        }
+
+        private static bool TryGetFieldOfObject<T>(object obj, string name, out T result)
+        {
+            result = default;
+
+            var objectType = obj.GetType();
+
+            var field = objectType.GetField(name, MemberBindingFlags);
+
+            if (field == null || field.FieldType != typeof(T))
+                return false;
+
+            result = (T) field.GetValue(obj);
+            
+            return true;
         }
 
         private static bool TryInvokeMethodOfObject<T>(object obj, string name, out T result)
