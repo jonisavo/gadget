@@ -1,4 +1,16 @@
-﻿## 0.3.0 [2022-03-26]
+﻿## 0.4.0 [2022-03-27]
+
+- Create a `PropertyDrawerExtension` system for stacked attributes
+- Migrate all existing attributes to use `PropertyDrawerExtension`
+- All attributes can be used simultaneously (except `InlineAttribute` and `SerializeReferenceSelectorAttribute`)
+
+### `DisabledAttribute`
+- Added
+
+### `ShowIfAttribute` & `EnableIfAttribute`
+- Add support for non-serialized fields
+
+## 0.3.0 [2022-03-26]
 
 ### `ShowIfAttribute` & `EnableIfAttribute`
 - Add support for properties and methods
