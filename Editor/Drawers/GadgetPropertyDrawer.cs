@@ -53,9 +53,7 @@ namespace Gadget.Editor.Drawers
             
             if (Extensions.Any(extension => !extension.IsVisible(property)))
                 return;
-
-            EditorGUI.BeginDisabledGroup(Extensions.Any(extension => !extension.IsEnabled(property)));
-
+            
             foreach (var extension in Extensions)
                 extension.OnPreGUI(new PropertyDrawerExtensionBase.DrawerExtensionCallbackInfo
                 {
@@ -64,6 +62,8 @@ namespace Gadget.Editor.Drawers
                     FieldInfo = fieldInfo,
                     Position = position
                 });
+
+            EditorGUI.BeginDisabledGroup(Extensions.Any(extension => !extension.IsEnabled(property)));
 
             var overridden = false;
 
@@ -83,6 +83,8 @@ namespace Gadget.Editor.Drawers
             if (!overridden)
                 EditorGUI.PropertyField(position, property, label, true);
 
+            EditorGUI.EndDisabledGroup();
+            
             foreach (var extension in Extensions.Reverse())
                 extension.OnPostGUI(new PropertyDrawerExtensionBase.DrawerExtensionCallbackInfo
                 {
@@ -91,8 +93,6 @@ namespace Gadget.Editor.Drawers
                     FieldInfo = fieldInfo,
                     Position = position
                 });
-
-            EditorGUI.EndDisabledGroup();
         }
 
         public override bool CanCacheInspectorGUI(SerializedProperty property)
