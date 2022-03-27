@@ -172,6 +172,20 @@ namespace Gadget.Editor.Internal.Utilities
             return true;
         }
 
+        public static bool TryGetMethodOfObject(object obj, string name, out MethodInfo methodInfo)
+        {
+            methodInfo = null;
+
+            if (obj == null)
+                return false;
+
+            var objectType = obj.GetType();
+
+            methodInfo = objectType.GetMethod(name, MemberBindingFlags);
+
+            return methodInfo != null;
+        }
+
         private static bool TryInvokeMethodOfObject<T>(object obj, string name, out T result)
         {
             result = default;
