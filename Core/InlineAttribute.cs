@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace InspectorEssentials.Core
+namespace Gadget.Core
 {
     /// <summary>
     /// Displays <see cref="UnityEngine.Object"/> fields with a foldout, which

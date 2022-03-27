@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace InspectorEssentials.Core
+namespace Gadget.Core
 {
     /// <summary>
     /// An attribute used on classes and structs, which overrides their menu path

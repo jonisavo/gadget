@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEditor;
 
-namespace InspectorEssentials.Editor.Internal.ContextMenus
+namespace Gadget.Editor.Internal.ContextMenus
 {
     internal class SerializeReferenceTypeContextMenuBuilder : TypeContextMenuBuilderBase
     {

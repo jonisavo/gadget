@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
-using InspectorEssentials.Core;
-using InspectorEssentials.Editor.Internal.ContextMenus;
-using InspectorEssentials.Editor.Internal.Utilities;
+using Gadget.Core;
+using Gadget.Editor.Internal.ContextMenus;
+using Gadget.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.DrawerExtensions
+namespace Gadget.Editor.DrawerExtensions
 {
     public class SerializeReferenceSelectorExtension : PropertyDrawerExtension<SerializeReferenceSelectorAttribute>
     {

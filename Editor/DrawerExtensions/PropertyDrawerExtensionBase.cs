@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using InspectorEssentials.Core;
-using InspectorEssentials.Editor.Drawers;
+using Gadget.Core;
+using Gadget.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.DrawerExtensions
+namespace Gadget.Editor.DrawerExtensions
 {
     /// <summary>
     /// The base class for PropertyDrawerExtensions. Defines all methods.

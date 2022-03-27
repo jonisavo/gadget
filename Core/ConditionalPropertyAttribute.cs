@@ -1,4 +1,4 @@
-﻿namespace InspectorEssentials.Core
+﻿namespace Gadget.Core
 {
     /// <summary>
     /// Used internally as a base class for conditional PropertyAttributes.

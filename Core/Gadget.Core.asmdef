@@ -1,12 +1,8 @@
 {
-    "name": "InspectorEssentials.Editor",
-    "rootNamespace": "InspectorEssentials",
-    "references": [
-        "GUID:38f3664f7e5f4cf41bd86ee9e4085cbc"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "name": "Gadget.Core",
+    "rootNamespace": "Gadget",
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

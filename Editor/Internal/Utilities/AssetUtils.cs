@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace InspectorEssentials.Editor.Internal.Utilities
+namespace Gadget.Editor.Internal.Utilities
 {
     internal static class AssetUtils
     {

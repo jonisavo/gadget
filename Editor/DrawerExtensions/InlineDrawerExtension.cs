@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using InspectorEssentials.Core;
-using InspectorEssentials.Editor.Internal.ContextMenus;
-using InspectorEssentials.Editor.Internal.Scope;
-using InspectorEssentials.Editor.Internal.Utilities;
+using Gadget.Core;
+using Gadget.Editor.Internal.ContextMenus;
+using Gadget.Editor.Internal.Scope;
+using Gadget.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 
 using Object = UnityEngine.Object;
 
-namespace InspectorEssentials.Editor.DrawerExtensions
+namespace Gadget.Editor.DrawerExtensions
 {
     public class InlineDrawerExtension : PropertyDrawerExtension<InlineAttribute>
     {

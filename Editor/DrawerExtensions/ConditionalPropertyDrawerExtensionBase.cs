@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
-using InspectorEssentials.Core;
-using InspectorEssentials.Editor.Internal.Utilities;
+using Gadget.Core;
+using Gadget.Editor.Internal.Utilities;
 using UnityEditor;
 
-namespace InspectorEssentials.Editor.DrawerExtensions
+namespace Gadget.Editor.DrawerExtensions
 {
     /// <summary>
     /// Used internally as a base drawer class for conditional properties.

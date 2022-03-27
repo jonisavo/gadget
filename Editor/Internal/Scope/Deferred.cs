@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace InspectorEssentials.Editor.Internal.Scope
+namespace Gadget.Editor.Internal.Scope
 {
     internal readonly struct Deferred : IDisposable
     {

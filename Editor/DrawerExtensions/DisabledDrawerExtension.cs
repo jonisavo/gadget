@@ -1,7 +1,7 @@
-﻿using InspectorEssentials.Core;
+﻿using Gadget.Core;
 using UnityEditor;
 
-namespace InspectorEssentials.Editor.DrawerExtensions
+namespace Gadget.Editor.DrawerExtensions
 {
     public class DisabledDrawerExtension : PropertyDrawerExtension<DisabledAttribute>
     {

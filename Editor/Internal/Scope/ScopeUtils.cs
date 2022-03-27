@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Internal.Scope
+namespace Gadget.Editor.Internal.Scope
 {
     internal static class ScopeUtils
     {

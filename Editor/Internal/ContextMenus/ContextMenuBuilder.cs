@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Internal.ContextMenus
+namespace Gadget.Editor.Internal.ContextMenus
 {
     internal abstract class ContextMenuBuilder<T>
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Internal.Utilities
+namespace Gadget.Editor.Internal.Utilities
 {
     internal static class InlineUtils
     {

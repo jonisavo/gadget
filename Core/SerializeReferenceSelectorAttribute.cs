@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace InspectorEssentials.Core
+namespace Gadget.Core
 {
     /// <summary>
     /// An attribute, when applied to a field with <see cref="SerializeReference"/>, allows

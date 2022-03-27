@@ -1,4 +1,4 @@
-﻿namespace InspectorEssentials.Core
+﻿namespace Gadget.Core
 {
     /// <summary>
     /// When used on a field, it is marked as enabled if the given boolean

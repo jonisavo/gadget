@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using InspectorEssentials.Editor.Internal.Utilities;
+using Gadget.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Internal.ContextMenus
+namespace Gadget.Editor.Internal.ContextMenus
 {
     internal class TypeContextMenuBuilderBase : ContextMenuBuilder<Type>
     {

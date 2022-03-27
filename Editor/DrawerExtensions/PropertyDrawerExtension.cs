@@ -1,6 +1,6 @@
-﻿using InspectorEssentials.Core;
+﻿using Gadget.Core;
 
-namespace InspectorEssentials.Editor.DrawerExtensions
+namespace Gadget.Editor.DrawerExtensions
 {
     /// <summary>
     /// <para>

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using InspectorEssentials.Core;
+using Gadget.Core;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Internal.Utilities
+namespace Gadget.Editor.Internal.Utilities
 {
     internal static class TypeUtils
     {

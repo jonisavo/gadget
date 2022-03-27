@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace InspectorEssentials.Core
+namespace Gadget.Core
 {
     /// <summary>
     /// Used by InspectorEssentials for each of its attributes. They share a single

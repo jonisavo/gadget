@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using InspectorEssentials.Core;
-using InspectorEssentials.Editor.DrawerExtensions;
+using Gadget.Core;
+using Gadget.Editor.DrawerExtensions;
 using UnityEditor;
 using UnityEngine;
 
-namespace InspectorEssentials.Editor.Drawers
+namespace Gadget.Editor.Drawers
 {
     /// <summary>
     /// Used as the drawer for each <see cref="BasePropertyAttribute"/>.
-    /// GUI drawing methods are implemented in each attribute's <see cref="DrawerExtensions.PropertyDrawerExtension"/>.
+    /// GUI drawing methods are implemented in each attribute's <see cref="PropertyDrawerExtension{T}"/>.
     /// </summary>
-    /// <seealso cref="DrawerExtensions.PropertyDrawerExtension"/>
+    /// <seealso cref="PropertyDrawerExtension{T}"/>
     /// <seealso cref="BasePropertyAttribute"/>
     [CustomPropertyDrawer(typeof(BasePropertyAttribute), true)]
     public class BasePropertyDrawer : PropertyDrawer
