@@ -1,4 +1,11 @@
-﻿## 0.4.0 [2022-03-27]
+﻿## 0.5.0 [2022-03-27]
+
+- Rename package to `io.savolainen.gadget.core`
+- Migrate project under `Gadget` namespace
+- Rename `BasePropertyAttribute` to `GadgetPropertyAttribute`
+- Rename `BasePropertyDrawer` to `GadgetPropertyDrawer`
+
+## 0.4.0 [2022-03-27]
 
 - Create a `PropertyDrawerExtension` system for stacked attributes
 - Migrate all existing attributes to use `PropertyDrawerExtension`
