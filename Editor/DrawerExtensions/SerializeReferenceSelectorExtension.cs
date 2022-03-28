@@ -13,7 +13,7 @@ namespace Gadget.Editor.DrawerExtensions
         
         public override void OnPreGUI(Rect position)
         {
-            if (IsPropertyValid(Property))
+            if (IsPropertyValid(CurrentProperty))
                 DrawTypeDropdownButton(position);
         }
 
@@ -29,7 +29,7 @@ namespace Gadget.Editor.DrawerExtensions
             var buttonRect = new Rect(buttonX, position.y, buttonWidth, buttonHeight);
                 
             if (EditorGUI.DropdownButton(buttonRect, buttonContent, FocusType.Passive))
-                ShowTypeDropdown(buttonRect, Property, FieldInfo);
+                ShowTypeDropdown(buttonRect, CurrentProperty, FieldInfo);
         }
 
         private string GetButtonText()

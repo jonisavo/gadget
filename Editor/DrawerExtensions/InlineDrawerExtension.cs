@@ -39,14 +39,14 @@ namespace Gadget.Editor.DrawerExtensions
             if (!Property.isExpanded)
                 return false;
 
-            if (!IsPropertyValid(Property))
+            if (!IsPropertyValid(CurrentProperty))
                 return false;
             
-            var serializedObject = Property.serializedObject;
+            var serializedObject = CurrentProperty.serializedObject;
             var asset = serializedObject.targetObject;
             using (new ObjectScope(asset))
             {
-                var target = Property.objectReferenceValue;
+                var target = CurrentProperty.objectReferenceValue;
                 var targetExists = target != null;
                 
                 if (!targetExists || ObjectScope.Contains(target))
@@ -62,7 +62,7 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override bool TryOverrideMainGUI(Rect position)
         {
-            if (!IsPropertyValid(Property))
+            if (!IsPropertyValid(CurrentProperty))
                 return false;
             
             var propertyRect = position;
@@ -73,11 +73,11 @@ namespace Gadget.Editor.DrawerExtensions
             
             DoObjectFieldGUI(propertyRect);
 
-            if (Property.objectReferenceValue)
-                DoFoldoutGUI(propertyRect, Property);
+            if (CurrentProperty.objectReferenceValue)
+                DoFoldoutGUI(propertyRect, CurrentProperty);
 
             if (Property.isExpanded)
-                DrawExpandedDrawer(position, propertyRect, Property);
+                DrawExpandedDrawer(position, propertyRect, CurrentProperty);
 
             DiscardObsoleteSerializedObjectsOnNextEditorUpdate();
 
@@ -111,7 +111,7 @@ namespace Gadget.Editor.DrawerExtensions
         public override bool IsInvalid(out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is invalid as InlineAttribute works only on Object references.";
-            return !IsPropertyValid(Property);
+            return !IsPropertyValid(CurrentProperty);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)
@@ -154,14 +154,14 @@ namespace Gadget.Editor.DrawerExtensions
 
         private void DoObjectFieldGUI(Rect position)
         {
-            var label = EditorGUI.BeginProperty(position, Content, Property);
+            var label = EditorGUI.BeginProperty(position, Content, CurrentProperty);
 
             if (ShouldShowInlineCreation())
                 position.xMax -= Resources.CreateButtonWidth;
 
             var objectType = TypeUtils.GetPrimaryConcreteType(FieldInfo.FieldType);
 
-            var oldTarget = Property.objectReferenceValue;
+            var oldTarget = CurrentProperty.objectReferenceValue;
             
             var newTarget =
                 EditorGUI.ObjectField(
@@ -169,12 +169,12 @@ namespace Gadget.Editor.DrawerExtensions
                     label,
                     oldTarget,
                     objectType,
-                    AllowSceneObjects(Property));
+                    AllowSceneObjects(CurrentProperty));
 
             EditorGUI.EndProperty();
             
             if (!ReferenceEquals(newTarget, oldTarget))
-                SetObjectReferenceValue(Property, newTarget);
+                SetObjectReferenceValue(CurrentProperty, newTarget);
         }
 
         private static void DoFoldoutGUI(
@@ -201,7 +201,7 @@ namespace Gadget.Editor.DrawerExtensions
 
             var menu = new GenericMenu();
 
-            var menuBuilder = new InlineTypeContextMenuBuilder(menu, FieldInfo, Property, types.Length > 16);
+            var menuBuilder = new InlineTypeContextMenuBuilder(menu, FieldInfo, CurrentProperty, types.Length > 16);
 
             if (types.Length == 1)
                 menuBuilder.Choose(types[0]);
