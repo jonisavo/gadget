@@ -14,8 +14,10 @@ namespace Gadget.Editor.Internal.Utilities
 
         public static bool DoesTypeSupportInlineCreation(Type type)
         {
+            var concreteType = TypeUtils.GetPrimaryConcreteType(type);
+            
             return TypesSupportingInlineCreation
-                .Any(supportedType => supportedType.IsAssignableFrom(type));
+                .Any(supportedType => supportedType.IsAssignableFrom(concreteType));
         }
     }
 }
