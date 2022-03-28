@@ -23,7 +23,7 @@ namespace Gadget.Editor.DrawerExtensions
             var buttonContent = new GUIContent(buttonText);
                 
             var buttonWidth = 14f + GUI.skin.button.CalcSize(buttonContent).x;
-            var buttonHeight = EditorGUI.GetPropertyHeight(Property, Content, false);
+            var buttonHeight = EditorGUIUtility.singleLineHeight;
 
             var buttonX = position.x + position.width - buttonWidth;
             var buttonRect = new Rect(buttonX, position.y, buttonWidth, buttonHeight);
@@ -62,7 +62,7 @@ namespace Gadget.Editor.DrawerExtensions
             var menuBuilder = new SerializeReferenceTypeContextMenuBuilder(menu, fieldInfo, property, false);
 
             var choices = menuBuilder.GetChoices();
-            
+
             menuBuilder.Show(position, choices);
         }
     }
