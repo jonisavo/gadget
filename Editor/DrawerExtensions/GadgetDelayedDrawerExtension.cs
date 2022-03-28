@@ -8,21 +8,21 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public GadgetDelayedDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool TryOverrideMainGUI(Rect position)
+        public override bool TryOverrideMainGUI(Rect position, SerializedProperty property)
         {
-            if (!IsPropertyValid(CurrentProperty))
+            if (!IsPropertyValid(property))
                 return false;
 
-            switch (CurrentProperty.propertyType)
+            switch (property.propertyType)
             {
                 case SerializedPropertyType.Float:
-                    EditorGUI.DelayedFloatField(position, CurrentProperty, Content);
+                    EditorGUI.DelayedFloatField(position, property, Label);
                     break;
                 case SerializedPropertyType.Integer:
-                    EditorGUI.DelayedIntField(position, CurrentProperty, Content);
+                    EditorGUI.DelayedIntField(position, property, Label);
                     break;
                 case SerializedPropertyType.String:
-                    EditorGUI.DelayedTextField(position, CurrentProperty, Content);
+                    EditorGUI.DelayedTextField(position, property, Label);
                     break;
                 default:
                     return false;
@@ -31,10 +31,10 @@ namespace Gadget.Editor.DrawerExtensions
             return true;
         }
 
-        public override bool IsInvalid(out string errorMessage)
+        public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not a float, an integer or a string";
-            return !IsPropertyValid(CurrentProperty);
+            return !IsPropertyValid(property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

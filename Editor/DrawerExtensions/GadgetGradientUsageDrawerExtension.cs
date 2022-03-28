@@ -9,13 +9,13 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public GadgetGradientUsageDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool TryOverrideMainGUI(Rect position)
+        public override bool TryOverrideMainGUI(Rect position, SerializedProperty property)
         {
-            if (IsInvalid(out _))
+            if (IsInvalid(property, out _))
                 return false;
 
             // gradientValue is internal for some strange reason.
-            var gradientPropertyInfo = CurrentProperty.GetType().GetProperty("gradientValue",
+            var gradientPropertyInfo = property.GetType().GetProperty("gradientValue",
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             if (gradientPropertyInfo == null)
@@ -25,21 +25,21 @@ namespace Gadget.Editor.DrawerExtensions
             
             EditorGUI.BeginChangeCheck();
 
-            var currentGradient = gradientPropertyInfo.GetValue(CurrentProperty, null) as Gradient;
+            var currentGradient = gradientPropertyInfo.GetValue(property, null) as Gradient;
 
-            var gradient = EditorGUI.GradientField(position, Content, currentGradient,
+            var gradient = EditorGUI.GradientField(position, Label, currentGradient,
                 gradientUsageAttribute.HDR, gradientUsageAttribute.ColorSpace);
 
             if (EditorGUI.EndChangeCheck())
-                gradientPropertyInfo.SetValue(CurrentProperty, gradient);
+                gradientPropertyInfo.SetValue(property, gradient);
 
             return true;
         }
 
-        public override bool IsInvalid(out string errorMessage)
+        public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not a Gradient.";
-            return CurrentProperty.propertyType != SerializedPropertyType.Gradient;
+            return property.propertyType != SerializedPropertyType.Gradient;
         }
     }
 }

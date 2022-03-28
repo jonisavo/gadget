@@ -7,9 +7,9 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public ShowIfDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool IsVisible()
+        public override bool IsVisible(SerializedProperty property)
         {
-            if (!TryGetBooleanField(CurrentProperty, out var shouldShow))
+            if (!TryGetBooleanField(property, out var shouldShow))
                 return true;
 
             return shouldShow;

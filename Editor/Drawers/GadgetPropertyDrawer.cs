@@ -19,7 +19,7 @@ namespace Gadget.Editor.Drawers
 
         private PropertyDrawerExtensionBase[] _propertyDrawerExtensions;
 
-        private PropertyDrawerExtensionBase[] GetExtensions(SerializedProperty property, GUIContent label)
+        private PropertyDrawerExtensionBase[] GetExtensions(GUIContent label)
         {
             if (_propertyDrawerExtensions != null &&
                 _propertyDrawerExtensions.All(extension => extension.IsInitialized()))
@@ -32,18 +32,18 @@ namespace Gadget.Editor.Drawers
                 .ToArray();;
 
             foreach (var extension in _propertyDrawerExtensions)
-                extension.Initialize(property, label, fieldInfo);
+                extension.Initialize(label, fieldInfo);
 
             return _propertyDrawerExtensions;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var extensions = GetExtensions(property, label);
+            var extensions = GetExtensions(label);
             
             foreach (var extension in extensions)
             {
-                if (!extension.IsInvalid(out var errorMessage))
+                if (!extension.IsInvalid(property, out var errorMessage))
                     continue;
 
                 var errorBoxPosition = new Rect(position)
@@ -56,19 +56,19 @@ namespace Gadget.Editor.Drawers
                 position.y += errorBoxPosition.height + WarningInfoBoxBottomPadding;
             }
             
-            if (extensions.Any(extension => !extension.IsVisible()))
+            if (extensions.Any(extension => !extension.IsVisible(property)))
                 return;
             
             foreach (var extension in extensions)
-                extension.OnPreGUI(position);
+                extension.OnPreGUI(position, property);
 
-            EditorGUI.BeginDisabledGroup(extensions.Any(extension => !extension.IsEnabled()));
+            EditorGUI.BeginDisabledGroup(extensions.Any(extension => !extension.IsEnabled(property)));
 
             var overridden = false;
 
             foreach (var extension in extensions)
             {
-                overridden = extension.TryOverrideMainGUI(position);
+                overridden = extension.TryOverrideMainGUI(position, property);
                 if (overridden)
                     break;
             }
@@ -79,7 +79,7 @@ namespace Gadget.Editor.Drawers
             EditorGUI.EndDisabledGroup();
             
             foreach (var extension in extensions.Reverse())
-                extension.OnPostGUI(position);
+                extension.OnPostGUI(position, property);
         }
 
         public override bool CanCacheInspectorGUI(SerializedProperty property)
@@ -98,17 +98,17 @@ namespace Gadget.Editor.Drawers
         
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            var extensions = GetExtensions(property, label);
+            var extensions = GetExtensions(label);
             
             var height = 0f;
 
             foreach (var extension in extensions)
             {
-                if (extension.IsInvalid(out var errorMessage))
+                if (extension.IsInvalid(property, out var errorMessage))
                     height += GetInfoBoxHeight(errorMessage) + WarningInfoBoxBottomPadding;
             }
 
-            if (extensions.Any(extension => !extension.IsVisible()))
+            if (extensions.Any(extension => !extension.IsVisible(property)))
                 return height;
 
             height += EditorGUI.GetPropertyHeight(property, label, true);
@@ -116,7 +116,7 @@ namespace Gadget.Editor.Drawers
             foreach (var extension in extensions)
             {
                 var didOverrideHeight =
-                    extension.TryOverrideHeight(height, out var newHeight);
+                    extension.TryOverrideHeight(height, property, out var newHeight);
                 
                 if (!didOverrideHeight)
                     continue;

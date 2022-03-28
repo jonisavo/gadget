@@ -22,7 +22,6 @@ namespace Gadget.Editor.Internal.ContextMenus
 
             var serializedObject = Property.serializedObject;
             Property.objectReferenceValue = objectReference;
-            Property.isExpanded = true;
             serializedObject.ApplyModifiedProperties();
         }
 

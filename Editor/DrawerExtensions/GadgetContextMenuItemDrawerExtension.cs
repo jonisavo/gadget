@@ -27,10 +27,8 @@ namespace Gadget.Editor.DrawerExtensions
 
         private GadgetContextMenuItemAttribute _contextMenuItemAttribute;
 
-        public override void OnPreGUI(Rect position)
+        public override void OnPreGUI(Rect position, SerializedProperty property)
         {
-            var property = CurrentProperty;
-            
             GenericMenu menu;
             
             if (!MenuDictionary.ContainsKey(property))
@@ -46,13 +44,13 @@ namespace Gadget.Editor.DrawerExtensions
             if (!TryGetMethodOfProperty(property, out var methodInfo))
                 return;
             
-            var targetObject = CurrentProperty.serializedObject.targetObject;
+            var targetObject = property.serializedObject.targetObject;
             
             menu.AddItem(new GUIContent(ContextMenuItemAttribute.MenuItemName), false,
                 () => methodInfo.Invoke(targetObject, null));
         }
 
-        public override void OnPostGUI(Rect position)
+        public override void OnPostGUI(Rect position, SerializedProperty property)
         {
             var evt = Event.current;
 
@@ -62,17 +60,17 @@ namespace Gadget.Editor.DrawerExtensions
             if (!position.Contains(evt.mousePosition))
                 return;
             
-            if (MenuDictionary.ContainsKey(CurrentProperty))
-                MenuDictionary[CurrentProperty].ShowAsContext();
+            if (MenuDictionary.ContainsKey(property))
+                MenuDictionary[property].ShowAsContext();
             
             evt.Use();
         }
 
-        public override bool IsInvalid(out string errorMessage)
+        public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage =
                 $"Field {FieldInfo.Name} has invalid method name {ContextMenuItemAttribute.MethodName}";
-            return !TryGetMethodOfProperty(CurrentProperty, out _);
+            return !TryGetMethodOfProperty(property, out _);
         }
 
         private bool TryGetMethodOfProperty(SerializedProperty property, out MethodInfo methodInfo)

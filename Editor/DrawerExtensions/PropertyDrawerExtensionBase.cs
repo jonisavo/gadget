@@ -14,25 +14,8 @@ namespace Gadget.Editor.DrawerExtensions
     public abstract class PropertyDrawerExtensionBase
     {
         protected readonly GadgetPropertyAttribute Attribute;
-
-        protected SerializedProperty CurrentProperty
-        {
-            get
-            {
-                if (!BaseProperty.isArray)
-                    return BaseProperty;
-
-                var index = BaseProperty.FindPropertyRelative("index");
-
-                if (index == null || index.propertyType != SerializedPropertyType.Integer)
-                    return BaseProperty;
-
-                return BaseProperty.GetArrayElementAtIndex(index.intValue);
-            }
-        }
         
-        protected SerializedProperty BaseProperty;
-        protected GUIContent Content;
+        protected GUIContent Label;
         protected FieldInfo FieldInfo;
 
         protected PropertyDrawerExtensionBase(GadgetPropertyAttribute attribute)
@@ -40,16 +23,15 @@ namespace Gadget.Editor.DrawerExtensions
             Attribute = attribute;
         }
 
-        public void Initialize(SerializedProperty property, GUIContent label, FieldInfo fieldInfo)
+        public void Initialize(GUIContent label, FieldInfo fieldInfo)
         {
-            BaseProperty = property;
-            Content = label;
+            Label = label;
             FieldInfo = fieldInfo;
         }
 
         public bool IsInitialized()
         {
-            return BaseProperty != null && Content != null && FieldInfo != null;
+            return Label != null && FieldInfo != null;
         }
 
         /// <summary>
@@ -57,9 +39,10 @@ namespace Gadget.Editor.DrawerExtensions
         /// property field. A PropertyDrawerExtension is able to override it
         /// in this function and should return <c>true</c> if it does so.
         /// </summary>
-        /// <param name="info">Properties from the calling PropertyDrawer</param>
+        /// <param name="position">Position of the property passed from the calling PropertyDrawer</param>
+        /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
         /// <returns>Whether main GUI was overridden</returns>
-        public virtual bool TryOverrideMainGUI(Rect position)
+        public virtual bool TryOverrideMainGUI(Rect position, SerializedProperty property)
         {
             return false;
         }
@@ -67,16 +50,18 @@ namespace Gadget.Editor.DrawerExtensions
         /// <summary>
         /// A callback invoked before drawing the main GUI.
         /// </summary>
-        /// <param name="info">Properties from the calling PropertyDrawer</param>
-        public virtual void OnPreGUI(Rect position)
+        /// <param name="position">Position of the property passed from the calling PropertyDrawer</param>
+        /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
+        public virtual void OnPreGUI(Rect position, SerializedProperty property)
         {
         }
 
         /// <summary>
         /// A callback invoked after drawing the main GUI.
         /// </summary>
-        /// <param name="info">Properties from the calling PropertyDrawer</param>
-        public virtual void OnPostGUI(Rect position)
+        /// <param name="position">Position of the property passed from the calling PropertyDrawer</param>
+        /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
+        public virtual void OnPostGUI(Rect position, SerializedProperty property)
         {
         }
 
@@ -85,7 +70,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// </summary>
         /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
         /// <returns>Whether the property should be visible</returns>
-        public virtual bool IsVisible()
+        public virtual bool IsVisible(SerializedProperty property)
         {
             return true;
         }
@@ -95,7 +80,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// </summary>
         /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
         /// <returns>Whether the property should be enabled</returns>
-        public virtual bool IsEnabled()
+        public virtual bool IsEnabled(SerializedProperty property)
         {
             return true;
         }
@@ -105,10 +90,9 @@ namespace Gadget.Editor.DrawerExtensions
         /// If <c>true</c>, the created error message is shown to the user.
         /// </summary>
         /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
-        /// <param name="fieldInfo">The FieldInfo from the calling PropertyDrawer</param>
         /// <param name="errorMessage">An error message to show to the user</param>
         /// <returns></returns>
-        public virtual bool IsInvalid(out string errorMessage)
+        public virtual bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage = null;
             return false;
@@ -119,10 +103,10 @@ namespace Gadget.Editor.DrawerExtensions
         /// It outputs the new height.
         /// </summary>
         /// <param name="currentHeight">Current property height</param>
-        /// <param name="info">Information passed from the calling PropertyDrawer</param>
+        /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
         /// <param name="newHeight">New height</param>
         /// <returns></returns>
-        public virtual bool TryOverrideHeight(float currentHeight, out float newHeight)
+        public virtual bool TryOverrideHeight(float currentHeight, SerializedProperty property, out float newHeight)
         {
             newHeight = currentHeight;
             return false;

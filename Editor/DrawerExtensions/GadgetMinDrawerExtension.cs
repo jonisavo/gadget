@@ -23,31 +23,31 @@ namespace Gadget.Editor.DrawerExtensions
 
         private GadgetMinAttribute _minAttribute;
         
-        public override void OnPreGUI(Rect position)
+        public override void OnPreGUI(Rect position, SerializedProperty property)
         {
-            if (!IsPropertyValid(CurrentProperty))
+            if (!IsPropertyValid(property))
                 return;
             
-            _previousValue = GetPropertyValue(CurrentProperty);
+            _previousValue = GetPropertyValue(property);
             
             EditorGUI.BeginChangeCheck();
         }
 
-        public override void OnPostGUI(Rect position)
+        public override void OnPostGUI(Rect position, SerializedProperty property)
         {
-            if (!EditorGUI.EndChangeCheck() || !IsPropertyValid(CurrentProperty))
+            if (!EditorGUI.EndChangeCheck() || !IsPropertyValid(property))
                 return;
 
-            var currentValue = GetPropertyValue(CurrentProperty);
+            var currentValue = GetPropertyValue(property);
 
             if (currentValue < _previousValue)
-                SetPropertyValue(CurrentProperty, MinAttribute.MinValue);
+                SetPropertyValue(property, MinAttribute.MinValue);
         }
 
-        public override bool IsInvalid(out string errorMessage)
+        public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not an integer or a float";
-            return !IsPropertyValid(CurrentProperty);
+            return !IsPropertyValid(property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

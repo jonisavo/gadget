@@ -7,7 +7,7 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public DisabledDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool IsEnabled()
+        public override bool IsEnabled(SerializedProperty property)
         {
             return false;
         }

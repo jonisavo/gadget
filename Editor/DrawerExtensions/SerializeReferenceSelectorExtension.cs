@@ -11,15 +11,15 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public SerializeReferenceSelectorExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
         
-        public override void OnPreGUI(Rect position)
+        public override void OnPreGUI(Rect position, SerializedProperty property)
         {
-            if (IsPropertyValid(CurrentProperty))
-                DrawTypeDropdownButton(position);
+            if (IsPropertyValid(property))
+                DrawTypeDropdownButton(position, property);
         }
 
-        private void DrawTypeDropdownButton(Rect position)
+        private void DrawTypeDropdownButton(Rect position, SerializedProperty property)
         {
-            var buttonText = GetButtonText();
+            var buttonText = GetButtonText(property);
             var buttonContent = new GUIContent(buttonText);
                 
             var buttonWidth = 14f + GUI.skin.button.CalcSize(buttonContent).x;
@@ -29,12 +29,12 @@ namespace Gadget.Editor.DrawerExtensions
             var buttonRect = new Rect(buttonX, position.y, buttonWidth, buttonHeight);
                 
             if (EditorGUI.DropdownButton(buttonRect, buttonContent, FocusType.Passive))
-                ShowTypeDropdown(buttonRect, CurrentProperty, FieldInfo);
+                ShowTypeDropdown(buttonRect, property, FieldInfo);
         }
 
-        private string GetButtonText()
+        private string GetButtonText(SerializedProperty property)
         {
-            var fullTypeName = CurrentProperty.managedReferenceFullTypename;
+            var fullTypeName = property.managedReferenceFullTypename;
             
             if (string.IsNullOrEmpty(fullTypeName))
                 return $"Select {TypeUtils.GetPrimaryConcreteTypeName(FieldInfo.FieldType)}";
@@ -42,12 +42,12 @@ namespace Gadget.Editor.DrawerExtensions
             return TypeUtils.GetShownTypeName(fullTypeName);
         }
 
-        public override bool IsInvalid(out string errorMessage)
+        public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage =
                 $"Field {FieldInfo.Name} is invalid. SerializeReferenceSelector only supports managed references.";
             
-            return !IsPropertyValid(CurrentProperty);
+            return !IsPropertyValid(property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

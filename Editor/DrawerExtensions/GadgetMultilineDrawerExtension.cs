@@ -8,9 +8,9 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public GadgetMultilineDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool TryOverrideMainGUI(Rect position)
+        public override bool TryOverrideMainGUI(Rect position, SerializedProperty property)
         {
-            if (!IsPropertyValid(CurrentProperty))
+            if (!IsPropertyValid(property))
                 return false;
 
             EditorGUI.BeginChangeCheck();
@@ -19,25 +19,25 @@ namespace Gadget.Editor.DrawerExtensions
             labelPosition.height = GetMultilineHeight();
             var labelFieldStyle = GUI.skin.label;
             labelFieldStyle.alignment = TextAnchor.UpperLeft;
-            EditorGUI.LabelField(labelPosition, Content, labelFieldStyle);
+            EditorGUI.LabelField(labelPosition, Label, labelFieldStyle);
 
             var textAreaPosition = position;
             textAreaPosition.x += EditorGUIUtility.labelWidth;
             textAreaPosition.height = GetMultilineHeight();
             
-            var newString = EditorGUI.TextArea(textAreaPosition, CurrentProperty.stringValue);
+            var newString = EditorGUI.TextArea(textAreaPosition, property.stringValue);
 
             if (EditorGUI.EndChangeCheck())
-                CurrentProperty.stringValue = newString;
+                property.stringValue = newString;
 
             return true;
         }
 
-        public override bool TryOverrideHeight(float currentHeight, out float newHeight)
+        public override bool TryOverrideHeight(float currentHeight, SerializedProperty property, out float newHeight)
         {
             newHeight = currentHeight;
             
-            if (!IsPropertyValid(CurrentProperty))
+            if (!IsPropertyValid(property))
                 return false;
 
             newHeight = GetMultilineHeight();
@@ -52,10 +52,10 @@ namespace Gadget.Editor.DrawerExtensions
             return EditorGUIUtility.singleLineHeight * multilineAttribute.Lines;
         }
 
-        public override bool IsInvalid(out string errorMessage)
+        public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not a string";
-            return !IsPropertyValid(CurrentProperty);
+            return !IsPropertyValid(property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

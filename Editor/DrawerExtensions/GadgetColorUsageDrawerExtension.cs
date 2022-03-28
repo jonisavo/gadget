@@ -9,29 +9,29 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public GadgetColorUsageDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool TryOverrideMainGUI(Rect position)
+        public override bool TryOverrideMainGUI(Rect position, SerializedProperty property)
         {
-            if (IsInvalid(out _))
+            if (IsInvalid(property, out _))
                 return false;
 
             var colorUsageAttribute = (GadgetColorUsageAttribute) Attribute;
             
             EditorGUI.BeginChangeCheck();
 
-            var color = EditorGUI.ColorField(position, Content, CurrentProperty.colorValue,
+            var color = EditorGUI.ColorField(position, Label, property.colorValue,
                 colorUsageAttribute.ShowEyedropper, colorUsageAttribute.ShowAlpha,
                 colorUsageAttribute.HDR);
 
             if (EditorGUI.EndChangeCheck())
-                CurrentProperty.colorValue = color;
+                property.colorValue = color;
 
             return true;
         }
 
-        public override bool IsInvalid(out string errorMessage)
+        public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not a Color.";
-            return CurrentProperty.propertyType != SerializedPropertyType.Color;
+            return property.propertyType != SerializedPropertyType.Color;
         }
     }
 }

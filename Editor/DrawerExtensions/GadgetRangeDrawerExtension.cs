@@ -22,19 +22,19 @@ namespace Gadget.Editor.DrawerExtensions
 
         private GadgetRangeAttribute _rangeAttribute;
 
-        public override bool TryOverrideMainGUI(Rect position)
+        public override bool TryOverrideMainGUI(Rect position, SerializedProperty property)
         {
-            if (!IsPropertyValid(CurrentProperty))
+            if (!IsPropertyValid(property))
                 return false;
             
-            switch (CurrentProperty.propertyType)
+            switch (property.propertyType)
             {
                 case SerializedPropertyType.Integer:
-                    EditorGUI.IntSlider(position, CurrentProperty,
-                        (int) RangeAttribute.Min, (int) RangeAttribute.Max, Content);
+                    EditorGUI.IntSlider(position, property,
+                        (int) RangeAttribute.Min, (int) RangeAttribute.Max, Label);
                     break;
                 case SerializedPropertyType.Float:
-                    EditorGUI.Slider(position, CurrentProperty,
+                    EditorGUI.Slider(position, property,
                         RangeAttribute.Min, RangeAttribute.Max);
                     break;
                 default:
@@ -44,10 +44,10 @@ namespace Gadget.Editor.DrawerExtensions
             return true;
         }
 
-        public override bool IsInvalid(out string errorMessage)
+        public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not an integer or a float";
-            return !IsPropertyValid(CurrentProperty);
+            return !IsPropertyValid(property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)
