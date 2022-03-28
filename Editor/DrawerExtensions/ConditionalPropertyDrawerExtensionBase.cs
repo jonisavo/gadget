@@ -44,7 +44,7 @@ namespace Gadget.Editor.DrawerExtensions
                 return true;
             }
 
-            if (TryGetBooleanField(Property, out _))
+            if (TryGetBooleanField(CurrentProperty, out _))
                 return false;
 
             errorMessage = $"Member {Attribute.MemberName} not found or is not a boolean";

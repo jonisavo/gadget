@@ -10,19 +10,19 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override bool TryOverrideMainGUI(Rect position)
         {
-            if (!IsPropertyValid(Property))
+            if (!IsPropertyValid(CurrentProperty))
                 return false;
 
-            switch (Property.propertyType)
+            switch (CurrentProperty.propertyType)
             {
                 case SerializedPropertyType.Float:
-                    EditorGUI.DelayedFloatField(position, Property, Content);
+                    EditorGUI.DelayedFloatField(position, CurrentProperty, Content);
                     break;
                 case SerializedPropertyType.Integer:
-                    EditorGUI.DelayedIntField(position, Property, Content);
+                    EditorGUI.DelayedIntField(position, CurrentProperty, Content);
                     break;
                 case SerializedPropertyType.String:
-                    EditorGUI.DelayedTextField(position, Property, Content);
+                    EditorGUI.DelayedTextField(position, CurrentProperty, Content);
                     break;
                 default:
                     return false;
@@ -34,7 +34,7 @@ namespace Gadget.Editor.DrawerExtensions
         public override bool IsInvalid(out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not a float, an integer or a string";
-            return !IsPropertyValid(Property);
+            return !IsPropertyValid(CurrentProperty);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

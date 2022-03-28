@@ -10,7 +10,7 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override bool TryOverrideMainGUI(Rect position)
         {
-            if (!IsPropertyValid(Property))
+            if (!IsPropertyValid(CurrentProperty))
                 return false;
 
             EditorGUI.BeginChangeCheck();
@@ -25,10 +25,10 @@ namespace Gadget.Editor.DrawerExtensions
             textAreaPosition.x += EditorGUIUtility.labelWidth;
             textAreaPosition.height = GetMultilineHeight();
             
-            var newString = EditorGUI.TextArea(textAreaPosition, Property.stringValue);
+            var newString = EditorGUI.TextArea(textAreaPosition, CurrentProperty.stringValue);
 
             if (EditorGUI.EndChangeCheck())
-                Property.stringValue = newString;
+                CurrentProperty.stringValue = newString;
 
             return true;
         }
@@ -37,7 +37,7 @@ namespace Gadget.Editor.DrawerExtensions
         {
             newHeight = currentHeight;
             
-            if (!IsPropertyValid(Property))
+            if (!IsPropertyValid(CurrentProperty))
                 return false;
 
             newHeight = GetMultilineHeight();
@@ -55,7 +55,7 @@ namespace Gadget.Editor.DrawerExtensions
         public override bool IsInvalid(out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not a string";
-            return !IsPropertyValid(Property);
+            return !IsPropertyValid(CurrentProperty);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

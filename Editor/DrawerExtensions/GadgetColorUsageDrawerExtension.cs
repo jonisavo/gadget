@@ -18,12 +18,12 @@ namespace Gadget.Editor.DrawerExtensions
             
             EditorGUI.BeginChangeCheck();
 
-            var color = EditorGUI.ColorField(position, Content, Property.colorValue,
+            var color = EditorGUI.ColorField(position, Content, CurrentProperty.colorValue,
                 colorUsageAttribute.ShowEyedropper, colorUsageAttribute.ShowAlpha,
                 colorUsageAttribute.HDR);
 
             if (EditorGUI.EndChangeCheck())
-                Property.colorValue = color;
+                CurrentProperty.colorValue = color;
 
             return true;
         }
@@ -31,7 +31,7 @@ namespace Gadget.Editor.DrawerExtensions
         public override bool IsInvalid(out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not a Color.";
-            return Property.propertyType != SerializedPropertyType.Color;
+            return CurrentProperty.propertyType != SerializedPropertyType.Color;
         }
     }
 }

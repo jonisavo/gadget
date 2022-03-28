@@ -19,19 +19,19 @@ namespace Gadget.Editor.DrawerExtensions
         {
             get
             {
-                if (!Property.isArray)
-                    return Property;
+                if (!BaseProperty.isArray)
+                    return BaseProperty;
 
-                var index = Property.FindPropertyRelative("index");
+                var index = BaseProperty.FindPropertyRelative("index");
 
-                if (index.propertyType != SerializedPropertyType.Integer)
-                    return Property;
+                if (index == null || index.propertyType != SerializedPropertyType.Integer)
+                    return BaseProperty;
 
-                return Property.GetArrayElementAtIndex(index.intValue);
+                return BaseProperty.GetArrayElementAtIndex(index.intValue);
             }
         }
         
-        protected SerializedProperty Property;
+        protected SerializedProperty BaseProperty;
         protected GUIContent Content;
         protected FieldInfo FieldInfo;
 
@@ -42,14 +42,14 @@ namespace Gadget.Editor.DrawerExtensions
 
         public void Initialize(SerializedProperty property, GUIContent label, FieldInfo fieldInfo)
         {
-            Property = property;
+            BaseProperty = property;
             Content = label;
             FieldInfo = fieldInfo;
         }
 
         public bool IsInitialized()
         {
-            return Property != null && Content != null && FieldInfo != null;
+            return BaseProperty != null && Content != null && FieldInfo != null;
         }
 
         /// <summary>

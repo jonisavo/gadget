@@ -9,7 +9,7 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override bool IsEnabled()
         {
-            if (!TryGetBooleanField(Property, out var shouldEnable))
+            if (!TryGetBooleanField(CurrentProperty, out var shouldEnable))
                 return true;
 
             return shouldEnable;

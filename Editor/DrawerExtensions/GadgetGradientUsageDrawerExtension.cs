@@ -15,7 +15,7 @@ namespace Gadget.Editor.DrawerExtensions
                 return false;
 
             // gradientValue is internal for some strange reason.
-            var gradientPropertyInfo = Property.GetType().GetProperty("gradientValue",
+            var gradientPropertyInfo = CurrentProperty.GetType().GetProperty("gradientValue",
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             if (gradientPropertyInfo == null)
@@ -25,13 +25,13 @@ namespace Gadget.Editor.DrawerExtensions
             
             EditorGUI.BeginChangeCheck();
 
-            var currentGradient = gradientPropertyInfo.GetValue(Property, null) as Gradient;
+            var currentGradient = gradientPropertyInfo.GetValue(CurrentProperty, null) as Gradient;
 
             var gradient = EditorGUI.GradientField(position, Content, currentGradient,
                 gradientUsageAttribute.HDR, gradientUsageAttribute.ColorSpace);
 
             if (EditorGUI.EndChangeCheck())
-                gradientPropertyInfo.SetValue(Property, gradient);
+                gradientPropertyInfo.SetValue(CurrentProperty, gradient);
 
             return true;
         }
@@ -39,7 +39,7 @@ namespace Gadget.Editor.DrawerExtensions
         public override bool IsInvalid(out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is not a Gradient.";
-            return Property.propertyType != SerializedPropertyType.Gradient;
+            return CurrentProperty.propertyType != SerializedPropertyType.Gradient;
         }
     }
 }

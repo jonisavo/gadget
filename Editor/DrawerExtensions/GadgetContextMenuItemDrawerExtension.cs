@@ -29,7 +29,7 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override void OnPreGUI(Rect position)
         {
-            var property = Property;
+            var property = CurrentProperty;
             
             GenericMenu menu;
             
@@ -46,7 +46,7 @@ namespace Gadget.Editor.DrawerExtensions
             if (!TryGetMethodOfProperty(property, out var methodInfo))
                 return;
             
-            var targetObject = Property.serializedObject.targetObject;
+            var targetObject = CurrentProperty.serializedObject.targetObject;
             
             menu.AddItem(new GUIContent(ContextMenuItemAttribute.MenuItemName), false,
                 () => methodInfo.Invoke(targetObject, null));
@@ -62,8 +62,8 @@ namespace Gadget.Editor.DrawerExtensions
             if (!position.Contains(evt.mousePosition))
                 return;
             
-            if (MenuDictionary.ContainsKey(Property))
-                MenuDictionary[Property].ShowAsContext();
+            if (MenuDictionary.ContainsKey(CurrentProperty))
+                MenuDictionary[CurrentProperty].ShowAsContext();
             
             evt.Use();
         }
@@ -72,7 +72,7 @@ namespace Gadget.Editor.DrawerExtensions
         {
             errorMessage =
                 $"Field {FieldInfo.Name} has invalid method name {ContextMenuItemAttribute.MethodName}";
-            return !TryGetMethodOfProperty(Property, out _);
+            return !TryGetMethodOfProperty(CurrentProperty, out _);
         }
 
         private bool TryGetMethodOfProperty(SerializedProperty property, out MethodInfo methodInfo)

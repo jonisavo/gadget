@@ -34,7 +34,7 @@ namespace Gadget.Editor.DrawerExtensions
 
         private string GetButtonText()
         {
-            var fullTypeName = Property.managedReferenceFullTypename;
+            var fullTypeName = CurrentProperty.managedReferenceFullTypename;
             
             if (string.IsNullOrEmpty(fullTypeName))
                 return $"Select {TypeUtils.GetPrimaryConcreteTypeName(FieldInfo.FieldType)}";
@@ -47,7 +47,7 @@ namespace Gadget.Editor.DrawerExtensions
             errorMessage =
                 $"Field {FieldInfo.Name} is invalid. SerializeReferenceSelector only supports managed references.";
             
-            return !IsPropertyValid(Property);
+            return !IsPropertyValid(CurrentProperty);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

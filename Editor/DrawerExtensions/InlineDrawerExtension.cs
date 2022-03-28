@@ -36,7 +36,7 @@ namespace Gadget.Editor.DrawerExtensions
         {
             newHeight = currentHeight;
 
-            if (!Property.isExpanded)
+            if (!CurrentProperty.isExpanded)
                 return false;
 
             if (!IsPropertyValid(CurrentProperty))
@@ -76,7 +76,7 @@ namespace Gadget.Editor.DrawerExtensions
             if (CurrentProperty.objectReferenceValue)
                 DoFoldoutGUI(propertyRect, CurrentProperty);
 
-            if (Property.isExpanded)
+            if (CurrentProperty.isExpanded)
                 DrawExpandedDrawer(position, propertyRect, CurrentProperty);
 
             DiscardObsoleteSerializedObjectsOnNextEditorUpdate();

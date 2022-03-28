@@ -9,7 +9,7 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override bool IsVisible()
         {
-            if (!TryGetBooleanField(Property, out var shouldShow))
+            if (!TryGetBooleanField(CurrentProperty, out var shouldShow))
                 return true;
 
             return shouldShow;
