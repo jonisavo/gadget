@@ -14,6 +14,22 @@ namespace Gadget.Editor.DrawerExtensions
     public abstract class PropertyDrawerExtensionBase
     {
         protected readonly GadgetPropertyAttribute Attribute;
+
+        protected SerializedProperty CurrentProperty
+        {
+            get
+            {
+                if (!Property.isArray)
+                    return Property;
+
+                var index = Property.FindPropertyRelative("index");
+
+                if (index.propertyType != SerializedPropertyType.Integer)
+                    return Property;
+
+                return Property.GetArrayElementAtIndex(index.intValue);
+            }
+        }
         
         protected SerializedProperty Property;
         protected GUIContent Content;
