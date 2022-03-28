@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Gadget.Core;
 using UnityEditor;
+using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
@@ -8,29 +9,29 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public GadgetColorUsageDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool TryOverrideMainGUI(DrawerExtensionCallbackInfo info)
+        public override bool TryOverrideMainGUI(Rect position)
         {
-            if (IsInvalid(info.Property, info.FieldInfo, out _))
+            if (IsInvalid(out _))
                 return false;
 
             var colorUsageAttribute = (GadgetColorUsageAttribute) Attribute;
             
             EditorGUI.BeginChangeCheck();
 
-            var color = EditorGUI.ColorField(info.Position, info.Content, info.Property.colorValue,
+            var color = EditorGUI.ColorField(position, Content, Property.colorValue,
                 colorUsageAttribute.ShowEyedropper, colorUsageAttribute.ShowAlpha,
                 colorUsageAttribute.HDR);
 
             if (EditorGUI.EndChangeCheck())
-                info.Property.colorValue = color;
+                Property.colorValue = color;
 
             return true;
         }
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
-            errorMessage = $"Field {fieldInfo.Name} is not a Color.";
-            return property.propertyType != SerializedPropertyType.Color;
+            errorMessage = $"Field {FieldInfo.Name} is not a Color.";
+            return Property.propertyType != SerializedPropertyType.Color;
         }
     }
 }

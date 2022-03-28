@@ -14,23 +14,28 @@ namespace Gadget.Editor.DrawerExtensions
     public abstract class PropertyDrawerExtensionBase
     {
         protected readonly GadgetPropertyAttribute Attribute;
+        
+        protected SerializedProperty Property;
+        protected GUIContent Content;
+        protected FieldInfo FieldInfo;
 
         protected PropertyDrawerExtensionBase(GadgetPropertyAttribute attribute)
         {
             Attribute = attribute;
         }
 
-        /// <summary>
-        /// Contains various properties sent from the PropertyDrawer.
-        /// </summary>
-        public struct DrawerExtensionCallbackInfo
+        public void Initialize(SerializedProperty property, GUIContent label, FieldInfo fieldInfo)
         {
-            public Rect Position;
-            public SerializedProperty Property;
-            public GUIContent Content;
-            public FieldInfo FieldInfo;
+            Property = property;
+            Content = label;
+            FieldInfo = fieldInfo;
         }
-        
+
+        public bool IsInitialized()
+        {
+            return Property != null && Content != null && FieldInfo != null;
+        }
+
         /// <summary>
         /// By default, <see cref="GadgetPropertyDrawer"/> draws a single
         /// property field. A PropertyDrawerExtension is able to override it
@@ -38,7 +43,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// </summary>
         /// <param name="info">Properties from the calling PropertyDrawer</param>
         /// <returns>Whether main GUI was overridden</returns>
-        public virtual bool TryOverrideMainGUI(DrawerExtensionCallbackInfo info)
+        public virtual bool TryOverrideMainGUI(Rect position)
         {
             return false;
         }
@@ -47,7 +52,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// A callback invoked before drawing the main GUI.
         /// </summary>
         /// <param name="info">Properties from the calling PropertyDrawer</param>
-        public virtual void OnPreGUI(DrawerExtensionCallbackInfo info)
+        public virtual void OnPreGUI(Rect position)
         {
         }
 
@@ -55,7 +60,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// A callback invoked after drawing the main GUI.
         /// </summary>
         /// <param name="info">Properties from the calling PropertyDrawer</param>
-        public virtual void OnPostGUI(DrawerExtensionCallbackInfo info)
+        public virtual void OnPostGUI(Rect position)
         {
         }
 
@@ -64,7 +69,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// </summary>
         /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
         /// <returns>Whether the property should be visible</returns>
-        public virtual bool IsVisible(SerializedProperty property)
+        public virtual bool IsVisible()
         {
             return true;
         }
@@ -74,7 +79,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// </summary>
         /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
         /// <returns>Whether the property should be enabled</returns>
-        public virtual bool IsEnabled(SerializedProperty property)
+        public virtual bool IsEnabled()
         {
             return true;
         }
@@ -87,7 +92,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// <param name="fieldInfo">The FieldInfo from the calling PropertyDrawer</param>
         /// <param name="errorMessage">An error message to show to the user</param>
         /// <returns></returns>
-        public virtual bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public virtual bool IsInvalid(out string errorMessage)
         {
             errorMessage = null;
             return false;
@@ -101,10 +106,7 @@ namespace Gadget.Editor.DrawerExtensions
         /// <param name="info">Information passed from the calling PropertyDrawer</param>
         /// <param name="newHeight">New height</param>
         /// <returns></returns>
-        public virtual bool TryOverrideHeight(
-            float currentHeight,
-            DrawerExtensionCallbackInfo info,
-            out float newHeight)
+        public virtual bool TryOverrideHeight(float currentHeight, out float newHeight)
         {
             newHeight = currentHeight;
             return false;

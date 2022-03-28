@@ -7,9 +7,9 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public EnableIfDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool IsEnabled(SerializedProperty property)
+        public override bool IsEnabled()
         {
-            if (!TryGetBooleanField(property, out var shouldEnable))
+            if (!TryGetBooleanField(Property, out var shouldEnable))
                 return true;
 
             return shouldEnable;

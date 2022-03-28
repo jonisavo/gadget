@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using Gadget.Core;
+﻿using Gadget.Core;
 using UnityEditor;
+using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
@@ -8,21 +8,21 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public GadgetDelayedDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool TryOverrideMainGUI(DrawerExtensionCallbackInfo info)
+        public override bool TryOverrideMainGUI(Rect position)
         {
-            if (!IsPropertyValid(info.Property))
+            if (!IsPropertyValid(Property))
                 return false;
 
-            switch (info.Property.propertyType)
+            switch (Property.propertyType)
             {
                 case SerializedPropertyType.Float:
-                    EditorGUI.DelayedFloatField(info.Position, info.Property, info.Content);
+                    EditorGUI.DelayedFloatField(position, Property, Content);
                     break;
                 case SerializedPropertyType.Integer:
-                    EditorGUI.DelayedIntField(info.Position, info.Property, info.Content);
+                    EditorGUI.DelayedIntField(position, Property, Content);
                     break;
                 case SerializedPropertyType.String:
-                    EditorGUI.DelayedTextField(info.Position, info.Property, info.Content);
+                    EditorGUI.DelayedTextField(position, Property, Content);
                     break;
                 default:
                     return false;
@@ -31,10 +31,10 @@ namespace Gadget.Editor.DrawerExtensions
             return true;
         }
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
-            errorMessage = $"Field {fieldInfo.Name} is not a float, an integer or a string";
-            return !IsPropertyValid(property);
+            errorMessage = $"Field {FieldInfo.Name} is not a float, an integer or a string";
+            return !IsPropertyValid(Property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

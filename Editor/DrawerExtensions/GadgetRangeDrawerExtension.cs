@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Gadget.Core;
 using UnityEditor;
+using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
@@ -21,19 +22,19 @@ namespace Gadget.Editor.DrawerExtensions
 
         private GadgetRangeAttribute _rangeAttribute;
 
-        public override bool TryOverrideMainGUI(DrawerExtensionCallbackInfo info)
+        public override bool TryOverrideMainGUI(Rect position)
         {
-            if (!IsPropertyValid(info.Property))
+            if (!IsPropertyValid(Property))
                 return false;
             
-            switch (info.Property.propertyType)
+            switch (Property.propertyType)
             {
                 case SerializedPropertyType.Integer:
-                    EditorGUI.IntSlider(info.Position, info.Property,
-                        (int) RangeAttribute.Min, (int) RangeAttribute.Max, info.Content);
+                    EditorGUI.IntSlider(position, Property,
+                        (int) RangeAttribute.Min, (int) RangeAttribute.Max, Content);
                     break;
                 case SerializedPropertyType.Float:
-                    EditorGUI.Slider(info.Position, info.Property,
+                    EditorGUI.Slider(position, Property,
                         RangeAttribute.Min, RangeAttribute.Max);
                     break;
                 default:
@@ -43,10 +44,10 @@ namespace Gadget.Editor.DrawerExtensions
             return true;
         }
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
-            errorMessage = $"Field {fieldInfo.Name} is not an integer or a float";
-            return !IsPropertyValid(property);
+            errorMessage = $"Field {FieldInfo.Name} is not an integer or a float";
+            return !IsPropertyValid(Property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

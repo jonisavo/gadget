@@ -34,7 +34,7 @@ namespace Gadget.Editor.DrawerExtensions
         
         private bool Inverted => Attribute.MemberName[0] == '!';
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
             errorMessage = null;
 
@@ -44,7 +44,7 @@ namespace Gadget.Editor.DrawerExtensions
                 return true;
             }
 
-            if (TryGetBooleanField(property, out _))
+            if (TryGetBooleanField(Property, out _))
                 return false;
 
             errorMessage = $"Member {Attribute.MemberName} not found or is not a boolean";

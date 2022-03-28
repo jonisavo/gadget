@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using Gadget.Core;
+﻿using Gadget.Core;
 using UnityEditor;
+using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
@@ -23,31 +23,31 @@ namespace Gadget.Editor.DrawerExtensions
 
         private GadgetMinAttribute _minAttribute;
         
-        public override void OnPreGUI(DrawerExtensionCallbackInfo info)
+        public override void OnPreGUI(Rect position)
         {
-            if (!IsPropertyValid(info.Property))
+            if (!IsPropertyValid(Property))
                 return;
             
-            _previousValue = GetPropertyValue(info.Property);
+            _previousValue = GetPropertyValue(Property);
             
             EditorGUI.BeginChangeCheck();
         }
 
-        public override void OnPostGUI(DrawerExtensionCallbackInfo info)
+        public override void OnPostGUI(Rect position)
         {
-            if (!EditorGUI.EndChangeCheck() || !IsPropertyValid(info.Property))
+            if (!EditorGUI.EndChangeCheck() || !IsPropertyValid(Property))
                 return;
 
-            var currentValue = GetPropertyValue(info.Property);
+            var currentValue = GetPropertyValue(Property);
 
             if (currentValue < _previousValue)
-                SetPropertyValue(info.Property, MinAttribute.MinValue);
+                SetPropertyValue(Property, MinAttribute.MinValue);
         }
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
-            errorMessage = $"Field {fieldInfo.Name} is not an integer or a float";
-            return !IsPropertyValid(property);
+            errorMessage = $"Field {FieldInfo.Name} is not an integer or a float";
+            return !IsPropertyValid(Property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

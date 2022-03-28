@@ -11,43 +11,43 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public SerializeReferenceSelectorExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
         
-        public override void OnPreGUI(DrawerExtensionCallbackInfo info)
+        public override void OnPreGUI(Rect position)
         {
-            if (IsPropertyValid(info.Property))
-                DrawTypeDropdownButton(info);
+            if (IsPropertyValid(Property))
+                DrawTypeDropdownButton(position);
         }
 
-        private static void DrawTypeDropdownButton(DrawerExtensionCallbackInfo info)
+        private void DrawTypeDropdownButton(Rect position)
         {
-            var buttonText = GetButtonText(info);
+            var buttonText = GetButtonText();
             var buttonContent = new GUIContent(buttonText);
                 
             var buttonWidth = 14f + GUI.skin.button.CalcSize(buttonContent).x;
-            var buttonHeight = EditorGUI.GetPropertyHeight(info.Property, info.Content, false);
+            var buttonHeight = EditorGUI.GetPropertyHeight(Property, Content, false);
 
-            var buttonX = info.Position.x + info.Position.width - buttonWidth;
-            var buttonRect = new Rect(buttonX, info.Position.y, buttonWidth, buttonHeight);
+            var buttonX = position.x + position.width - buttonWidth;
+            var buttonRect = new Rect(buttonX, position.y, buttonWidth, buttonHeight);
                 
             if (EditorGUI.DropdownButton(buttonRect, buttonContent, FocusType.Passive))
-                ShowTypeDropdown(buttonRect, info.Property, info.FieldInfo);
+                ShowTypeDropdown(buttonRect, Property, FieldInfo);
         }
 
-        private static string GetButtonText(DrawerExtensionCallbackInfo info)
+        private string GetButtonText()
         {
-            var fullTypeName = info.Property.managedReferenceFullTypename;
+            var fullTypeName = Property.managedReferenceFullTypename;
             
             if (string.IsNullOrEmpty(fullTypeName))
-                return $"Select {TypeUtils.GetPrimaryConcreteTypeName(info.FieldInfo.FieldType)}";
+                return $"Select {TypeUtils.GetPrimaryConcreteTypeName(FieldInfo.FieldType)}";
 
             return TypeUtils.GetShownTypeName(fullTypeName);
         }
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
             errorMessage =
-                $"Field {fieldInfo.Name} is invalid. SerializeReferenceSelector only supports managed references.";
+                $"Field {FieldInfo.Name} is invalid. SerializeReferenceSelector only supports managed references.";
             
-            return !IsPropertyValid(property);
+            return !IsPropertyValid(Property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)

@@ -32,26 +32,21 @@ namespace Gadget.Editor.DrawerExtensions
             return false;
         }
 
-        public override bool TryOverrideHeight(
-            float currentHeight,
-            DrawerExtensionCallbackInfo info,
-            out float newHeight)
+        public override bool TryOverrideHeight(float currentHeight, out float newHeight)
         {
             newHeight = currentHeight;
 
-            var property = info.Property;
-
-            if (!property.isExpanded)
+            if (!Property.isExpanded)
                 return false;
 
-            if (!IsPropertyValid(property))
+            if (!IsPropertyValid(Property))
                 return false;
             
-            var serializedObject = property.serializedObject;
+            var serializedObject = Property.serializedObject;
             var asset = serializedObject.targetObject;
             using (new ObjectScope(asset))
             {
-                var target = property.objectReferenceValue;
+                var target = Property.objectReferenceValue;
                 var targetExists = target != null;
                 
                 if (!targetExists || ObjectScope.Contains(target))
@@ -65,24 +60,24 @@ namespace Gadget.Editor.DrawerExtensions
             return true;
         }
 
-        public override bool TryOverrideMainGUI(DrawerExtensionCallbackInfo info)
+        public override bool TryOverrideMainGUI(Rect position)
         {
-            if (!IsPropertyValid(info.Property))
+            if (!IsPropertyValid(Property))
                 return false;
             
-            var propertyRect = info.Position;
+            var propertyRect = position;
             propertyRect.height = EditorGUIUtility.singleLineHeight;
 
-            if (ShouldShowInlineCreation(info.FieldInfo)) 
-                DoInlineCreationGUI(propertyRect, info);
+            if (ShouldShowInlineCreation()) 
+                DoInlineCreationGUI(propertyRect);
             
-            DoObjectFieldGUI(propertyRect, info);
+            DoObjectFieldGUI(propertyRect);
 
-            if (info.Property.objectReferenceValue)
-                DoFoldoutGUI(propertyRect, info.Property);
+            if (Property.objectReferenceValue)
+                DoFoldoutGUI(propertyRect, Property);
 
-            if (info.Property.isExpanded)
-                DrawExpandedDrawer(info.Position, propertyRect, info.Property);
+            if (Property.isExpanded)
+                DrawExpandedDrawer(position, propertyRect, Property);
 
             DiscardObsoleteSerializedObjectsOnNextEditorUpdate();
 
@@ -113,10 +108,10 @@ namespace Gadget.Editor.DrawerExtensions
             }
         }
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
-            errorMessage = $"Field {fieldInfo.Name} is invalid as InlineAttribute works only on Object references.";
-            return !IsPropertyValid(property);
+            errorMessage = $"Field {FieldInfo.Name} is invalid as InlineAttribute works only on Object references.";
+            return !IsPropertyValid(Property);
         }
 
         private static bool IsPropertyValid(SerializedProperty property)
@@ -124,21 +119,21 @@ namespace Gadget.Editor.DrawerExtensions
             return property.propertyType == SerializedPropertyType.ObjectReference;
         }
         
-        private bool ShouldShowInlineCreation(FieldInfo fieldInfo)
+        private bool ShouldShowInlineCreation()
         {
             var inlineAttribute = (InlineAttribute) Attribute;
             return !inlineAttribute.DisallowInlineCreation &&
-                   InlineUtils.DoesTypeSupportInlineCreation(fieldInfo.FieldType);
+                   InlineUtils.DoesTypeSupportInlineCreation(FieldInfo.FieldType);
         }
 
-        private static void DoInlineCreationGUI(Rect position, DrawerExtensionCallbackInfo info)
+        private void DoInlineCreationGUI(Rect position)
         {
             var buttonRect = position;
             buttonRect.xMin = buttonRect.xMax - Resources.CreateButtonWidth;
             var buttonStyle = EditorStyles.miniButton;
 
             if (GUI.Button(buttonRect, Resources.CreateContent, buttonStyle)) 
-                ShowTypeMenu(buttonRect, info);
+                ShowTypeMenu(buttonRect);
         }
 
         private static void SetObjectReferenceValue(
@@ -157,16 +152,16 @@ namespace Gadget.Editor.DrawerExtensions
             return asset != null && !EditorUtility.IsPersistent(asset);
         }
 
-        private void DoObjectFieldGUI(Rect position, DrawerExtensionCallbackInfo info)
+        private void DoObjectFieldGUI(Rect position)
         {
-            var label = EditorGUI.BeginProperty(position, info.Content, info.Property);
+            var label = EditorGUI.BeginProperty(position, Content, Property);
 
-            if (ShouldShowInlineCreation(info.FieldInfo))
+            if (ShouldShowInlineCreation())
                 position.xMax -= Resources.CreateButtonWidth;
 
-            var objectType = TypeUtils.GetPrimaryConcreteType(info.FieldInfo.FieldType);
+            var objectType = TypeUtils.GetPrimaryConcreteType(FieldInfo.FieldType);
 
-            var oldTarget = info.Property.objectReferenceValue;
+            var oldTarget = Property.objectReferenceValue;
             
             var newTarget =
                 EditorGUI.ObjectField(
@@ -174,12 +169,12 @@ namespace Gadget.Editor.DrawerExtensions
                     label,
                     oldTarget,
                     objectType,
-                    AllowSceneObjects(info.Property));
+                    AllowSceneObjects(Property));
 
             EditorGUI.EndProperty();
             
             if (!ReferenceEquals(newTarget, oldTarget))
-                SetObjectReferenceValue(info.Property, newTarget);
+                SetObjectReferenceValue(Property, newTarget);
         }
 
         private static void DoFoldoutGUI(
@@ -200,13 +195,13 @@ namespace Gadget.Editor.DrawerExtensions
                 property.isExpanded = isExpanded;
         }
 
-        private static void ShowTypeMenu(Rect position, DrawerExtensionCallbackInfo info)
+        private void ShowTypeMenu(Rect position)
         {
-            var types = TypeUtils.GetConcreteTypes(info.FieldInfo.FieldType);
+            var types = TypeUtils.GetConcreteTypes(FieldInfo.FieldType);
 
             var menu = new GenericMenu();
 
-            var menuBuilder = new InlineTypeContextMenuBuilder(menu, info.FieldInfo, info.Property, types.Length > 16);
+            var menuBuilder = new InlineTypeContextMenuBuilder(menu, FieldInfo, Property, types.Length > 16);
 
             if (types.Length == 1)
                 menuBuilder.Choose(types[0]);

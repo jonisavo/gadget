@@ -27,9 +27,9 @@ namespace Gadget.Editor.DrawerExtensions
 
         private GadgetContextMenuItemAttribute _contextMenuItemAttribute;
 
-        public override void OnPreGUI(DrawerExtensionCallbackInfo info)
+        public override void OnPreGUI(Rect position)
         {
-            var property = info.Property;
+            var property = Property;
             
             GenericMenu menu;
             
@@ -46,33 +46,33 @@ namespace Gadget.Editor.DrawerExtensions
             if (!TryGetMethodOfProperty(property, out var methodInfo))
                 return;
             
-            var targetObject = info.Property.serializedObject.targetObject;
+            var targetObject = Property.serializedObject.targetObject;
             
             menu.AddItem(new GUIContent(ContextMenuItemAttribute.MenuItemName), false,
                 () => methodInfo.Invoke(targetObject, null));
         }
 
-        public override void OnPostGUI(DrawerExtensionCallbackInfo info)
+        public override void OnPostGUI(Rect position)
         {
             var evt = Event.current;
 
             if (evt.type != EventType.MouseDown || evt.button != 1)
                 return;
 
-            if (!info.Position.Contains(evt.mousePosition))
+            if (!position.Contains(evt.mousePosition))
                 return;
             
-            if (MenuDictionary.ContainsKey(info.Property))
-                MenuDictionary[info.Property].ShowAsContext();
+            if (MenuDictionary.ContainsKey(Property))
+                MenuDictionary[Property].ShowAsContext();
             
             evt.Use();
         }
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
             errorMessage =
-                $"Field {fieldInfo.Name} has invalid method name {ContextMenuItemAttribute.MethodName}";
-            return !TryGetMethodOfProperty(property, out _);
+                $"Field {FieldInfo.Name} has invalid method name {ContextMenuItemAttribute.MethodName}";
+            return !TryGetMethodOfProperty(Property, out _);
         }
 
         private bool TryGetMethodOfProperty(SerializedProperty property, out MethodInfo methodInfo)

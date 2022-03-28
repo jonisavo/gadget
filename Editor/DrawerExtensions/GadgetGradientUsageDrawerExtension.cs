@@ -9,13 +9,13 @@ namespace Gadget.Editor.DrawerExtensions
     {
         public GadgetGradientUsageDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 
-        public override bool TryOverrideMainGUI(DrawerExtensionCallbackInfo info)
+        public override bool TryOverrideMainGUI(Rect position)
         {
-            if (IsInvalid(info.Property, info.FieldInfo, out _))
+            if (IsInvalid(out _))
                 return false;
 
             // gradientValue is internal for some strange reason.
-            var gradientPropertyInfo = info.Property.GetType().GetProperty("gradientValue",
+            var gradientPropertyInfo = Property.GetType().GetProperty("gradientValue",
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             if (gradientPropertyInfo == null)
@@ -25,21 +25,21 @@ namespace Gadget.Editor.DrawerExtensions
             
             EditorGUI.BeginChangeCheck();
 
-            var currentGradient = gradientPropertyInfo.GetValue(info.Property, null) as Gradient;
+            var currentGradient = gradientPropertyInfo.GetValue(Property, null) as Gradient;
 
-            var gradient = EditorGUI.GradientField(info.Position, info.Content, currentGradient,
+            var gradient = EditorGUI.GradientField(position, Content, currentGradient,
                 gradientUsageAttribute.HDR, gradientUsageAttribute.ColorSpace);
 
             if (EditorGUI.EndChangeCheck())
-                gradientPropertyInfo.SetValue(info.Property, gradient);
+                gradientPropertyInfo.SetValue(Property, gradient);
 
             return true;
         }
 
-        public override bool IsInvalid(SerializedProperty property, FieldInfo fieldInfo, out string errorMessage)
+        public override bool IsInvalid(out string errorMessage)
         {
-            errorMessage = $"Field {fieldInfo.Name} is not a Gradient.";
-            return property.propertyType != SerializedPropertyType.Gradient;
+            errorMessage = $"Field {FieldInfo.Name} is not a Gradient.";
+            return Property.propertyType != SerializedPropertyType.Gradient;
         }
     }
 }
