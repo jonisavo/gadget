@@ -10,7 +10,7 @@ namespace Gadget.Core
     /// </summary>
     /// <example>
     /// <code>
-    /// [GadgetGradientUsage(ColorSpace.Linear, true)]
+    /// [GadgetGradientUsage(true, ColorSpace.Linear)]
     /// public Gradient gradient;
     /// 
     /// [GadgetGradientUsage(ColorSpace = ColorSpace.Linear, HDR = true)]
