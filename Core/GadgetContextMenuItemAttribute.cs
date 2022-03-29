@@ -8,6 +8,7 @@ namespace Gadget.Core
     /// <see cref="GadgetPropertyAttribute"/> type Attributes.
     /// Has an additional constructor which can be used to set the menu item
     /// and method name at once.
+    /// The method can take the field object as a parameter.
     /// </summary>
     /// <example>
     /// <code>
@@ -17,9 +18,10 @@ namespace Gadget.Core
     /// [GadgetContextMenuItem("Leave Alone", "LeaveAlone")]
     /// string dontTouch = "Don't touch!";
     /// 
-    /// private void Touch()
+    /// private void Touch(string str)
     /// {
     ///     dontTouch = "You touched! :(";
+    ///     Debug.Log("You touched string " + str);
     /// }
     /// 
     /// public void Peek()
@@ -27,9 +29,10 @@ namespace Gadget.Core
     ///     dontTouch = "You peeked! :o";
     /// }
     /// 
-    /// public void LeaveAlone()
+    /// public void LeaveAlone(object obj)
     /// {
     ///     dontTouch = "You left me alone :)";
+    ///     Debug.Log("You left alone object of type " + obj.GetType());
     /// }
     /// </code>
     /// </example>

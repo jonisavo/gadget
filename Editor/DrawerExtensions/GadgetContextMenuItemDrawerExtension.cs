@@ -43,11 +43,27 @@ namespace Gadget.Editor.DrawerExtensions
 
             if (!TryGetMethodOfProperty(property, out var methodInfo))
                 return;
-            
+
+            if (IsInvalid(property, out _))
+                return;
+
+            menu.AddItem(new GUIContent(ContextMenuItemAttribute.MenuItemName), false,
+                () => InvokeMethodOnTargetObject(property, methodInfo));
+        }
+
+        private static void InvokeMethodOnTargetObject(SerializedProperty property, MethodInfo methodInfo)
+        {
             var targetObject = property.serializedObject.targetObject;
             
-            menu.AddItem(new GUIContent(ContextMenuItemAttribute.MenuItemName), false,
-                () => methodInfo.Invoke(targetObject, null));
+            object[] parameters = null;
+
+            if (methodInfo.GetParameters().Length == 1)
+                parameters = new[]
+                {
+                    SerializedPropertyUtils.GetTargetObjectOfProperty(property)
+                };
+
+            methodInfo.Invoke(targetObject, parameters);
         }
 
         public override void OnPostGUI(Rect position, SerializedProperty property)
@@ -63,7 +79,7 @@ namespace Gadget.Editor.DrawerExtensions
             if (!contextMenuArea.Contains(evt.mousePosition))
                 return;
             
-            if (MenuDictionary.ContainsKey(property))
+            if (MenuDictionary.ContainsKey(property) && MenuDictionary[property].GetItemCount() > 0)
                 MenuDictionary[property].ShowAsContext();
             
             evt.Use();
@@ -73,7 +89,29 @@ namespace Gadget.Editor.DrawerExtensions
         {
             errorMessage =
                 $"Field {FieldInfo.Name} has invalid method name {ContextMenuItemAttribute.MethodName}";
-            return !TryGetMethodOfProperty(property, out _);
+
+            if (!TryGetMethodOfProperty(property, out var methodInfo))
+                return true;
+            
+            var methodParameters = methodInfo.GetParameters();
+            
+            errorMessage =
+                $"Method {methodInfo.Name} has more than one parameter";
+
+            if (methodParameters.Length > 1)
+                return true;
+            
+            var fieldConcreteType = TypeUtils.GetPrimaryConcreteType(FieldInfo.FieldType);
+
+            if (methodParameters.Length == 0)
+                return false;
+            
+            var parameterType = methodParameters[0].ParameterType;
+            
+            errorMessage =
+                $"Method {methodInfo.Name} has a {parameterType} parameter which is incompatible with {fieldConcreteType}";
+
+            return !parameterType.IsAssignableFrom(fieldConcreteType);
         }
 
         private bool TryGetMethodOfProperty(SerializedProperty property, out MethodInfo methodInfo)
