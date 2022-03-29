@@ -57,7 +57,10 @@ namespace Gadget.Editor.DrawerExtensions
             if (evt.type != EventType.MouseDown || evt.button != 1)
                 return;
 
-            if (!position.Contains(evt.mousePosition))
+            var contextMenuArea = position;
+            contextMenuArea.width = EditorGUIUtility.labelWidth;
+
+            if (!contextMenuArea.Contains(evt.mousePosition))
                 return;
             
             if (MenuDictionary.ContainsKey(property))
