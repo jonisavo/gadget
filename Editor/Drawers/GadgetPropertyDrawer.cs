@@ -46,12 +46,12 @@ namespace Gadget.Editor.Drawers
                 if (!extension.IsInvalid(property, out var errorMessage))
                     continue;
 
-                var errorBoxPosition = new Rect(position)
-                {
-                    height = GetInfoBoxHeight(errorMessage)
-                };
+                var shownErrorMessage = $"{extension.GetType().Name}\n{errorMessage}";
 
-                EditorGUI.HelpBox(errorBoxPosition, $"{extension.GetType().Name}\n{errorMessage}", MessageType.Error);
+                var errorBoxPosition = position;
+                errorBoxPosition.height = GetInfoBoxHeight(shownErrorMessage);
+
+                EditorGUI.HelpBox(errorBoxPosition, shownErrorMessage, MessageType.Error);
 
                 position.y += errorBoxPosition.height + WarningInfoBoxBottomPadding;
             }
@@ -93,7 +93,7 @@ namespace Gadget.Editor.Drawers
         private static float GetInfoBoxHeight(string text)
         {
             return GUI.skin.box.CalcHeight(new GUIContent(text),
-                EditorGUIUtility.fieldWidth + EditorGUIUtility.labelWidth);
+                EditorGUIUtility.fieldWidth + EditorGUIUtility.labelWidth * 2);
         }
         
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -105,8 +105,13 @@ namespace Gadget.Editor.Drawers
             foreach (var extension in extensions)
             {
                 if (extension.IsInvalid(property, out var errorMessage))
-                    height += GetInfoBoxHeight(errorMessage) + WarningInfoBoxBottomPadding;
+                {
+                    var shownErrorMessage = $"{extension.GetType().Name}\n{errorMessage}";
+                    height += GetInfoBoxHeight(shownErrorMessage) + WarningInfoBoxBottomPadding;
+                }
             }
+
+            var heightOfErrorBoxes = height;
 
             if (extensions.Any(extension => !extension.IsVisible(property)))
                 return height;
@@ -121,7 +126,7 @@ namespace Gadget.Editor.Drawers
                 if (!didOverrideHeight)
                     continue;
                 
-                height = newHeight;
+                height = newHeight + heightOfErrorBoxes;
                 break;
             }
             return height;
