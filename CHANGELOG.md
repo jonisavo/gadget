@@ -1,4 +1,37 @@
-﻿## 0.5.0 [2022-03-27]
+﻿## 0.6.0 [2022-03-30]
+
+- Cache `GUIContent` label and `FieldInfo` in `PropertyDrawerExtensionBase`
+- Call `OnPreGUI` and `OnPostGUI` before and after disabled groups, respectively
+- Fix error box drawing in array elements
+
+### `ShowIfAttribute`
+- No longer has an effect in arrays
+
+### `GadgetTooltipAttribute`
+- Added
+
+### `GadgetMultilineAttribute`
+- Added
+
+### `GadgetDelayedAttribute`
+- Added
+
+### `GadgetMinAttribute`
+- Added
+
+### `GadgetGradientUsageAttribute`
+- Added
+
+### `GadgetColorUsageAttribute`
+- Added
+
+### `GadgetContextMenuItemAttribute`
+- Added
+
+### `GadgetRangeAttribute`
+- Added
+
+## 0.5.0 [2022-03-27]
 
 - Rename package to `io.savolainen.gadget.core`
 - Migrate project under `Gadget` namespace
