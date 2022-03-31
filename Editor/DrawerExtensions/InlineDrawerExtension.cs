@@ -11,7 +11,8 @@ using Object = UnityEngine.Object;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class InlineDrawerExtension : PropertyDrawerExtension<InlineAttribute>
+    [GadgetExtensionFor(typeof(InlineAttribute))]
+    public class InlineDrawerExtension : GadgetDrawerExtension
     {
         public InlineDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
         

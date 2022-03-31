@@ -1,11 +1,11 @@
-﻿using System.Reflection;
-using Gadget.Core;
+﻿using Gadget.Core;
 using UnityEditor;
 using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class GadgetColorUsageDrawerExtension : PropertyDrawerExtension<GadgetColorUsageAttribute>
+    [GadgetExtensionFor(typeof(GadgetColorUsageAttribute))]
+    public class GadgetColorUsageDrawerExtension : GadgetDrawerExtension
     {
         public GadgetColorUsageDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 

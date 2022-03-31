@@ -7,7 +7,8 @@ using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class SerializeReferenceSelectorExtension : PropertyDrawerExtension<SerializeReferenceSelectorAttribute>
+    [GadgetExtensionFor(typeof(SerializeReferenceSelectorAttribute))]
+    public class SerializeReferenceSelectorExtension : GadgetDrawerExtension
     {
         public SerializeReferenceSelectorExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
         

@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class GadgetDelayedDrawerExtension : PropertyDrawerExtension<GadgetDelayedAttribute>
+    [GadgetExtensionFor(typeof(GadgetDelayedAttribute))]
+    public class GadgetDelayedDrawerExtension : GadgetDrawerExtension
     {
         public GadgetDelayedDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 

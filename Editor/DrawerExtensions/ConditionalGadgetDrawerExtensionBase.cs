@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Gadget.Core;
+﻿using Gadget.Core;
 using Gadget.Editor.Internal.Utilities;
 using UnityEditor;
 
@@ -8,11 +7,10 @@ namespace Gadget.Editor.DrawerExtensions
     /// <summary>
     /// Used internally as a base drawer class for conditional properties.
     /// </summary>
-    /// <typeparam name="T">ConditionalPropertyAttribute type</typeparam>
-    public abstract class ConditionalPropertyDrawerExtensionBase<T> : PropertyDrawerExtension<T>
+    public abstract class ConditionalGadgetDrawerExtensionBase<T> : GadgetDrawerExtension
         where T : ConditionalPropertyAttribute
     {
-        protected ConditionalPropertyDrawerExtensionBase(GadgetPropertyAttribute attribute) : base(attribute) {}
+        protected ConditionalGadgetDrawerExtensionBase(T attribute) : base(attribute) {}
 
         private new T Attribute => base.Attribute as T;
         

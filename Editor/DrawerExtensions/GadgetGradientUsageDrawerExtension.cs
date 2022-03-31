@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class GadgetGradientUsageDrawerExtension : PropertyDrawerExtension<GadgetGradientUsageAttribute>
+    [GadgetExtensionFor(typeof(GadgetGradientUsageAttribute))]
+    public class GadgetGradientUsageDrawerExtension : GadgetDrawerExtension
     {
         public GadgetGradientUsageDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 

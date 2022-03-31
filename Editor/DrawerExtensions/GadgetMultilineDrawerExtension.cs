@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class GadgetMultilineDrawerExtension : PropertyDrawerExtension<GadgetMultilineAttribute>
+    [GadgetExtensionFor(typeof(GadgetMultilineAttribute))]
+    public class GadgetMultilineDrawerExtension : GadgetDrawerExtension
     {
         public GadgetMultilineDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 

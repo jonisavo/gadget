@@ -1,11 +1,11 @@
-﻿using System.Reflection;
-using Gadget.Core;
+﻿using Gadget.Core;
 using UnityEditor;
 using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class GadgetRangeDrawerExtension : PropertyDrawerExtension<GadgetRangeAttribute>
+    [GadgetExtensionFor(typeof(GadgetRangeAttribute))]
+    public class GadgetRangeDrawerExtension : GadgetDrawerExtension
     {
         public GadgetRangeDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 

@@ -3,9 +3,10 @@ using UnityEditor;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class ShowIfDrawerExtension : ConditionalPropertyDrawerExtensionBase<ShowIfAttribute>
+    [GadgetExtensionFor(typeof(ShowIfAttribute))]
+    public class ShowIfDrawerExtension : ConditionalGadgetDrawerExtensionBase<ShowIfAttribute>
     {
-        public ShowIfDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
+        public ShowIfDrawerExtension(ShowIfAttribute attribute) : base(attribute) {}
 
         public override bool IsVisible(SerializedProperty property)
         {

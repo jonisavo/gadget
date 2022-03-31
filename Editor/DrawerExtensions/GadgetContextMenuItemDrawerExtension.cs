@@ -7,7 +7,8 @@ using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class GadgetContextMenuItemDrawerExtension : PropertyDrawerExtension<GadgetContextMenuItemAttribute>
+    [GadgetExtensionFor(typeof(GadgetContextMenuItemAttribute))]
+    public class GadgetContextMenuItemDrawerExtension : GadgetDrawerExtension
     {
         public GadgetContextMenuItemDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 

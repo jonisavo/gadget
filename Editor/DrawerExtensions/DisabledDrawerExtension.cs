@@ -3,7 +3,8 @@ using UnityEditor;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class DisabledDrawerExtension : PropertyDrawerExtension<DisabledAttribute>
+    [GadgetExtensionFor(typeof(DisabledAttribute))]
+    public class DisabledDrawerExtension : GadgetDrawerExtension
     {
         public DisabledDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
 

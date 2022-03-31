@@ -8,18 +8,18 @@ namespace Gadget.Editor.Drawers
 {
     /// <summary>
     /// Used as the drawer for each <see cref="GadgetPropertyAttribute"/>.
-    /// GUI drawing methods are implemented in each attribute's <see cref="PropertyDrawerExtension{T}"/>.
+    /// GUI drawing methods are implemented in each attribute's <see cref="GadgetDrawerExtension{T}"/>.
     /// </summary>
-    /// <seealso cref="PropertyDrawerExtension{T}"/>
+    /// <seealso cref="GadgetDrawerExtension{T}"/>
     /// <seealso cref="GadgetPropertyAttribute"/>
     [CustomPropertyDrawer(typeof(GadgetPropertyAttribute), true)]
     public class GadgetPropertyDrawer : PropertyDrawer
     {
         private const float WarningInfoBoxBottomPadding = 2f;
 
-        private PropertyDrawerExtensionBase[] _propertyDrawerExtensions;
+        private GadgetDrawerExtension[] _propertyDrawerExtensions;
 
-        private PropertyDrawerExtensionBase[] GetExtensions(GUIContent label)
+        private GadgetDrawerExtension[] GetExtensions(GUIContent label)
         {
             if (_propertyDrawerExtensions != null &&
                 _propertyDrawerExtensions.All(extension => extension.IsInitialized()))
@@ -27,7 +27,7 @@ namespace Gadget.Editor.Drawers
 
             _propertyDrawerExtensions = fieldInfo.GetCustomAttributes(false)
                 .Select(attr =>
-                    PropertyDrawerExtensionBase.GetDrawerExtensionForAttribute(attr as PropertyAttribute))
+                    GadgetDrawerExtension.GetDrawerExtensionForAttribute(attr as GadgetPropertyAttribute))
                 .Where(attr => attr != null)
                 .ToArray();;
 

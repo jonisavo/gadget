@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    public class GadgetTooltipDrawerExtension : PropertyDrawerExtension<GadgetTooltipAttribute>
+    [GadgetExtensionFor(typeof(GadgetTooltipAttribute))]
+    public class GadgetTooltipDrawerExtension : GadgetDrawerExtension
     {
         public GadgetTooltipDrawerExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
         

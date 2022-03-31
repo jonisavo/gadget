@@ -9,16 +9,28 @@ using UnityEngine;
 namespace Gadget.Editor.DrawerExtensions
 {
     /// <summary>
-    /// The base class for PropertyDrawerExtensions. Defines all methods.
+    /// <para>
+    /// <see cref="GadgetDrawerExtension"/> is a workaround for the "1 PropertyDrawer per property" limitation.
+    /// They can be applied to any attribute that inherits from <see cref="GadgetPropertyAttribute"/>.
+    /// The <see cref="GadgetPropertyDrawer"/> is responsible for applying the effects
+    /// of all drawer extensions correctly.
+    /// </para>
+    /// <para>
+    /// <see cref="GadgetExtensionForAttribute"/> is used to link the extension to
+    /// a <see cref="GadgetPropertyAttribute"/>.
+    /// </para>
     /// </summary>
-    public abstract class PropertyDrawerExtensionBase
+    /// <seealso cref="GadgetExtensionForAttribute"/>
+    /// <seealso cref="GadgetPropertyAttribute"/>
+    /// <seealso cref="GadgetPropertyDrawer"/>
+    public class GadgetDrawerExtension
     {
         protected readonly GadgetPropertyAttribute Attribute;
         
         protected GUIContent Label;
         protected FieldInfo FieldInfo;
 
-        protected PropertyDrawerExtensionBase(GadgetPropertyAttribute attribute)
+        protected GadgetDrawerExtension(GadgetPropertyAttribute attribute)
         {
             Attribute = attribute;
         }
@@ -122,13 +134,13 @@ namespace Gadget.Editor.DrawerExtensions
             return true;
         }
 
-        internal static PropertyDrawerExtensionBase GetDrawerExtensionForAttribute(PropertyAttribute attribute)
+        internal static GadgetDrawerExtension GetDrawerExtensionForAttribute(GadgetPropertyAttribute attribute)
         {
             if (attribute == null)
                 return null;
             
             var type = attribute.GetType();
-            var typeofDrawerExtension = typeof(PropertyDrawerExtensionBase);
+            var typeofDrawerExtension = typeof(GadgetDrawerExtension);
 
             var assembly = Assembly.GetAssembly(typeofDrawerExtension);
 
@@ -137,8 +149,17 @@ namespace Gadget.Editor.DrawerExtensions
 
             var drawerExtensionAttributesWithType = assembly.GetTypes()
                 .Where(assemblyType => assemblyType.IsSubclassOf(typeofDrawerExtension))
-                .Where(drawerExtensionType => drawerExtensionType.BaseType is {IsGenericType: true})
-                .Where(drawerExtensionType => drawerExtensionType.BaseType.GenericTypeArguments[0] == type)
+                .Where(drawerExtensionType => drawerExtensionType.BaseType != null)
+                .Where(drawerExtensionType =>
+                {
+                    var extensionForAttribute =
+                        drawerExtensionType.GetCustomAttribute(typeof(GadgetExtensionForAttribute));
+
+                    if (extensionForAttribute is GadgetExtensionForAttribute extensionAttribute)
+                        return extensionAttribute.ExtendsAttributeType == type;
+
+                    return false;
+                })
                 .Select(drawerExtensionType => Activator.CreateInstance(drawerExtensionType, attribute))
                 .ToArray();
 
@@ -147,7 +168,7 @@ namespace Gadget.Editor.DrawerExtensions
             if (drawerExtensionAttributesWithType.Length > 1)
                 Debug.LogWarning($"More than one property drawer extension found for type {type}");
 
-            if (drawerExtensionAttributesWithType[0] is PropertyDrawerExtensionBase extension)
+            if (drawerExtensionAttributesWithType[0] is GadgetDrawerExtension extension)
                 return extension;
 
             return null;
