@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace Gadget.Editor.DrawerExtensions
 {
-    [GadgetExtensionFor(typeof(SerializeReferenceSelectorAttribute))]
-    public class SerializeReferenceSelectorExtension : GadgetDrawerExtension
+    [GadgetExtensionFor(typeof(ReferenceTypeSelectorAttribute))]
+    public class ReferenceTypeSelectorExtension : GadgetDrawerExtension
     {
-        public SerializeReferenceSelectorExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
+        public ReferenceTypeSelectorExtension(GadgetPropertyAttribute attribute) : base(attribute) {}
         
         public override void OnPreGUI(Rect position, SerializedProperty property)
         {
@@ -46,7 +46,7 @@ namespace Gadget.Editor.DrawerExtensions
         public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage =
-                $"Field {FieldInfo.Name} is invalid. SerializeReferenceSelector only supports managed references.";
+                $"Field {FieldInfo.Name} is invalid. {Attribute.GetType().Name} only supports managed references.";
             
             return !IsPropertyValid(property);
         }

@@ -23,10 +23,10 @@ namespace Gadget.Core
     ///     public override void Attack() { /* ... */ }
     /// }
     ///
-    /// [SerializeReference, SerializeReferenceSelector]
+    /// [SerializeReference, ReferenceTypeSelector]
     /// public Character character;
     ///
-    /// [SerializeReference, SerializeReferenceSelector]
+    /// [SerializeReference, ReferenceTypeSelector]
     /// public Character[] characters;
     ///
     /// public interface IEvent
@@ -40,14 +40,14 @@ namespace Gadget.Core
     ///     public float damageAmount;
     /// }
     ///
-    /// [SerializeReference, SerializeReferenceSelector]
+    /// [SerializeReference, ReferenceTypeSelector]
     /// public IEvent eventField;
     ///
-    /// [SerializeReference, SerializeReferenceSelector]
+    /// [SerializeReference, ReferenceTypeSelector]
     /// public IEvent[] events;
     /// </code>
     /// </example>
     /// <seealso cref="SerializeReference"/>
     /// <seealso cref="TypeMenuPathAttribute"/>
-    public class SerializeReferenceSelectorAttribute : GadgetPropertyAttribute {}
+    public class ReferenceTypeSelectorAttribute : GadgetPropertyAttribute {}
 }
