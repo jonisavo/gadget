@@ -1,4 +1,12 @@
-﻿## 0.7.0 [2022-03-31]
+﻿## 0.8.0 [2022-03-31]
+
+### `ReferenceTypeSelectorAttribute`
+- Renamed from `SerializeReferenceSelectorAttribute`
+
+### `InlineAttribute` & `SerializeReferenceSelectorAttribute`
+- Fix concrete field type not being selectable in type context menus
+
+## 0.7.0 [2022-03-31]
 
 - Rename `PropertyDrawerExtensionBase` to `GadgetDrawerExtension`
 - Remove `PropertyDrawerExtension<T>`
