@@ -1,4 +1,5 @@
-﻿using Gadget.Core;
+﻿using System.Collections.Generic;
+using Gadget.Core;
 using UnityEditor;
 
 namespace Gadget.Editor.DrawerExtensions
@@ -10,7 +11,7 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override bool IsVisible(SerializedProperty property)
         {
-            if (PropertyIsPartOfArray(property))
+            if (FieldIsArrayOrList())
                 return true;
             
             if (!TryGetBooleanField(property, out var shouldShow))
@@ -21,13 +22,13 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
-            errorMessage = $"Field {FieldInfo.Name} is an array.";
-            return PropertyIsPartOfArray(property);
+            errorMessage = $"Field {FieldInfo.Name} is an array or List<>.";
+            return FieldIsArrayOrList();
         }
 
-        private static bool PropertyIsPartOfArray(SerializedProperty property)
+        private bool FieldIsArrayOrList()
         {
-            return property.propertyPath.Contains("Array.data[");
+            return FieldInfo.FieldType.IsArray || FieldInfo.FieldType == typeof(List<>);
         }
     } 
 }
