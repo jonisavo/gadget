@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Gadget.Editor.Internal.Utilities;
 using UnityEditor;
@@ -45,7 +46,9 @@ namespace Gadget.Editor.Internal.ContextMenus
 
         public override Type[] GetChoices()
         {
-            return TypeUtils.GetConcreteTypes(FieldInfo.FieldType);
+            return TypeUtils.GetConcreteTypes(FieldInfo.FieldType)
+                .Where(type => type != FieldInfo.FieldType)
+                .ToArray();
         }
 
         protected override void BuildMenu(IEnumerable<Type> items)
@@ -61,16 +64,12 @@ namespace Gadget.Editor.Internal.ContextMenus
         {
             var concreteType = TypeUtils.GetPrimaryConcreteType(FieldInfo.FieldType);
 
+            var guiContent = new GUIContent(BuildMenuPath(concreteType));
+
             if (concreteType.IsAbstract || concreteType.IsGenericType)
-            {
-                Menu.AddDisabledItem(new GUIContent(concreteType.Name));
-            }
+                Menu.AddDisabledItem(guiContent);
             else
-            {
-                Menu.AddItem(
-                    new GUIContent(concreteType.Name), false,
-                    () => OnChoose(FieldInfo.FieldType));
-            }
+                Menu.AddItem(guiContent, false, () => OnChoose(concreteType));
         }
     }
 }
