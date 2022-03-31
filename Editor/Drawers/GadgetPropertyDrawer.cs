@@ -104,17 +104,17 @@ namespace Gadget.Editor.Drawers
 
             foreach (var extension in extensions)
             {
-                if (extension.IsInvalid(property, out var errorMessage))
-                {
-                    var shownErrorMessage = $"{extension.GetType().Name}\n{errorMessage}";
-                    height += GetInfoBoxHeight(shownErrorMessage) + WarningInfoBoxBottomPadding;
-                }
+                if (!extension.IsInvalid(property, out var errorMessage)) 
+                    continue;
+                
+                var shownErrorMessage = $"{extension.GetType().Name}\n{errorMessage}";
+                height += GetInfoBoxHeight(shownErrorMessage) + WarningInfoBoxBottomPadding;
             }
-
-            var heightOfErrorBoxes = height;
 
             if (extensions.Any(extension => !extension.IsVisible(property)))
                 return height;
+            
+            var heightOfErrorBoxes = height;
 
             height += EditorGUI.GetPropertyHeight(property, label, true);
             
