@@ -1,4 +1,10 @@
-﻿## 0.6.0 [2022-03-30]
+﻿## 0.7.0 [2022-03-31]
+
+- Rename `PropertyDrawerExtensionBase` to `GadgetDrawerExtension`
+- Remove `PropertyDrawerExtension<T>`
+- Add `GadgetExtensionForAttribute` for linking an extension to an attribute
+
+## 0.6.0 [2022-03-30]
 
 - Cache `GUIContent` label and `FieldInfo` in `PropertyDrawerExtensionBase`
 - Call `OnPreGUI` and `OnPostGUI` before and after disabled groups, respectively
