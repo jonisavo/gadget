@@ -5,7 +5,7 @@ using UnityEditor;
 namespace Gadget.Editor.DrawerExtensions
 {
     /// <summary>
-    /// Used internally as a base drawer class for conditional properties.
+    /// Used internally as a base drawer class for conditional property attributes.
     /// </summary>
     public abstract class ConditionalGadgetDrawerExtensionBase<T> : GadgetDrawerExtension
         where T : ConditionalPropertyAttribute
