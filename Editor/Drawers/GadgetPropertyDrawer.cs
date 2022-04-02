@@ -8,9 +8,9 @@ namespace Gadget.Editor.Drawers
 {
     /// <summary>
     /// Used as the drawer for each <see cref="GadgetPropertyAttribute"/>.
-    /// GUI drawing methods are implemented in each attribute's <see cref="GadgetDrawerExtension{T}"/>.
+    /// GUI drawing methods are implemented in each attribute's <see cref="GadgetDrawerExtension"/>.
     /// </summary>
-    /// <seealso cref="GadgetDrawerExtension{T}"/>
+    /// <seealso cref="GadgetDrawerExtension"/>
     /// <seealso cref="GadgetPropertyAttribute"/>
     [CustomPropertyDrawer(typeof(GadgetPropertyAttribute), true)]
     public class GadgetPropertyDrawer : PropertyDrawer
