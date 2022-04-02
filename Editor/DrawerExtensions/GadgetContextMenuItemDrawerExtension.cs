@@ -89,8 +89,13 @@ namespace Gadget.Editor.DrawerExtensions
 
         public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
+            errorMessage = "No method name specified";
+            
+            if (string.IsNullOrEmpty(ContextMenuItemAttribute.MethodName))
+                return true;
+            
             errorMessage =
-                $"Field {FieldInfo.Name} has invalid method name {ContextMenuItemAttribute.MethodName}";
+                $"Method {ContextMenuItemAttribute.MethodName} could not be found or is invalid";
 
             if (!TryGetMethodOfProperty(property, out var methodInfo))
                 return true;
