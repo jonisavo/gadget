@@ -37,10 +37,13 @@ namespace Gadget.Editor.DrawerExtensions
         {
             var fullTypeName = property.managedReferenceFullTypename;
             
-            if (string.IsNullOrEmpty(fullTypeName))
-                return $"Select {TypeUtils.GetPrimaryConcreteTypeName(FieldInfo.FieldType)}";
-
-            return TypeUtils.GetShownTypeName(fullTypeName);
+            if (!string.IsNullOrEmpty(fullTypeName))
+                return TypeUtils.GetShownTypeName(fullTypeName);
+            
+            var concreteTypeName =
+                TypeUtils.GetPrimaryConcreteTypeName(FieldInfo.FieldType);
+            
+            return $"Select {ObjectNames.NicifyVariableName(concreteTypeName)}";
         }
 
         public override bool IsInvalid(SerializedProperty property, out string errorMessage)

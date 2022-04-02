@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Gadget.Core;
+using UnityEditor;
 using UnityEngine;
 
 namespace Gadget.Editor.Internal.Utilities
@@ -101,7 +102,7 @@ namespace Gadget.Editor.Internal.Utilities
                 return type.FullName.Replace('.', '/');
             }
 
-            return type.Name;
+            return ObjectNames.NicifyVariableName(type.Name);
         }
 
         public static string GetShownTypeName(string fullTypeName)
@@ -119,7 +120,7 @@ namespace Gadget.Editor.Internal.Utilities
 
             var type = assembly.GetType(typeName);
 
-            var menuPath = GetMenuPathForType(type, GetMenuPathMode.UseTypeFullName);
+            var menuPath = GetMenuPathForType(type);
 
             var parts = menuPath.Split('/');
 

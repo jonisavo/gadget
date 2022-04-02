@@ -63,8 +63,9 @@ namespace Gadget.Editor.Internal.ContextMenus
         private void AddTypeNameHeaderItem()
         {
             var concreteType = TypeUtils.GetPrimaryConcreteType(FieldInfo.FieldType);
-
-            var guiContent = new GUIContent(BuildMenuPath(concreteType));
+            var niceName = ObjectNames.NicifyVariableName(concreteType.Name);
+            
+            var guiContent = new GUIContent(niceName);
 
             if (concreteType.IsAbstract || concreteType.IsGenericType)
                 Menu.AddDisabledItem(guiContent);
