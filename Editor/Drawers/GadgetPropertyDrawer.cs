@@ -53,7 +53,10 @@ namespace Gadget.Editor.Drawers
 
                 EditorGUI.HelpBox(errorBoxPosition, shownErrorMessage, MessageType.Error);
 
-                position.y += errorBoxPosition.height + WarningInfoBoxBottomPadding;
+                var totalHeight = errorBoxPosition.height + WarningInfoBoxBottomPadding;
+
+                position.y += totalHeight;
+                position.height -= totalHeight;
             }
             
             if (extensions.Any(extension => !extension.IsVisible(property)))
