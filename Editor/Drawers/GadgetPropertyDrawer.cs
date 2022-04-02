@@ -29,7 +29,7 @@ namespace Gadget.Editor.Drawers
                 .Select(attr =>
                     GadgetDrawerExtension.GetDrawerExtensionForAttribute(attr as GadgetPropertyAttribute))
                 .Where(attr => attr != null)
-                .ToArray();;
+                .ToArray();
 
             foreach (var extension in _propertyDrawerExtensions)
                 extension.Initialize(label, fieldInfo);
@@ -95,11 +95,10 @@ namespace Gadget.Editor.Drawers
             return GUI.skin.box.CalcHeight(new GUIContent(text),
                 EditorGUIUtility.fieldWidth + EditorGUIUtility.labelWidth * 2);
         }
-        
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+
+        private static float SumErrorBoxHeights(
+            SerializedProperty property, GadgetDrawerExtension[] extensions)
         {
-            var extensions = GetExtensions(label);
-            
             var height = 0f;
 
             foreach (var extension in extensions)
@@ -108,13 +107,21 @@ namespace Gadget.Editor.Drawers
                     continue;
                 
                 var shownErrorMessage = $"{extension.GetType().Name}\n{errorMessage}";
-                height += GetInfoBoxHeight(shownErrorMessage) + WarningInfoBoxBottomPadding;
+                height += GetInfoBoxHeight(shownErrorMessage);
+                height += WarningInfoBoxBottomPadding;
             }
+
+            return height;
+        }
+        
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            var extensions = GetExtensions(label);
+            
+            var height = SumErrorBoxHeights(property, extensions);
 
             if (extensions.Any(extension => !extension.IsVisible(property)))
                 return height;
-            
-            var heightOfErrorBoxes = height;
 
             height += EditorGUI.GetPropertyHeight(property, label, true);
             
@@ -126,7 +133,7 @@ namespace Gadget.Editor.Drawers
                 if (!didOverrideHeight)
                     continue;
                 
-                height = newHeight + heightOfErrorBoxes;
+                height = newHeight;
                 break;
             }
             return height;

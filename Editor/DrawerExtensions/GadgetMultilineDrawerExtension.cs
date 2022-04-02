@@ -41,7 +41,7 @@ namespace Gadget.Editor.DrawerExtensions
             if (!IsPropertyValid(property))
                 return false;
 
-            newHeight = GetMultilineHeight();
+            newHeight += GetMultilineHeight();
 
             return true;
         }
