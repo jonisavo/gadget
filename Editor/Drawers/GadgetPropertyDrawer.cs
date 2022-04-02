@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Gadget.Core;
 using Gadget.Editor.DrawerExtensions;
+using Gadget.Editor.Internal.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,21 +38,33 @@ namespace Gadget.Editor.Drawers
             return _propertyDrawerExtensions;
         }
 
+        private static bool IsExtensionInvalid(
+            GadgetDrawerExtension extension,
+            SerializedProperty property,
+            out string errorMessage
+        )
+        {
+            if (!extension.IsInvalid(property, out errorMessage))
+                return false;
+            
+            errorMessage = $"{extension.GetType().Name}\n{errorMessage}";
+
+            return true;
+        }
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var extensions = GetExtensions(label);
             
             foreach (var extension in extensions)
             {
-                if (!extension.IsInvalid(property, out var errorMessage))
+                if (!IsExtensionInvalid(extension, property, out var errorMessage))
                     continue;
 
-                var shownErrorMessage = $"{extension.GetType().Name}\n{errorMessage}";
-
                 var errorBoxPosition = position;
-                errorBoxPosition.height = GetInfoBoxHeight(shownErrorMessage);
+                errorBoxPosition.height = InfoBoxUtils.GetInfoBoxHeight(errorMessage);
 
-                EditorGUI.HelpBox(errorBoxPosition, shownErrorMessage, MessageType.Error);
+                EditorGUI.HelpBox(errorBoxPosition, errorMessage, MessageType.Error);
 
                 var totalHeight = errorBoxPosition.height + WarningInfoBoxBottomPadding;
 
@@ -93,12 +106,6 @@ namespace Gadget.Editor.Drawers
             return _propertyDrawerExtensions.All(extension => extension.CanCacheInspectorGUI(property));
         }
 
-        private static float GetInfoBoxHeight(string text)
-        {
-            return GUI.skin.box.CalcHeight(new GUIContent(text),
-                EditorGUIUtility.fieldWidth + EditorGUIUtility.labelWidth * 2);
-        }
-
         private static float SumErrorBoxHeights(
             SerializedProperty property, GadgetDrawerExtension[] extensions)
         {
@@ -106,11 +113,10 @@ namespace Gadget.Editor.Drawers
 
             foreach (var extension in extensions)
             {
-                if (!extension.IsInvalid(property, out var errorMessage)) 
+                if (!IsExtensionInvalid(extension, property, out var errorMessage))
                     continue;
                 
-                var shownErrorMessage = $"{extension.GetType().Name}\n{errorMessage}";
-                height += GetInfoBoxHeight(shownErrorMessage);
+                height += InfoBoxUtils.GetInfoBoxHeight(errorMessage);
                 height += WarningInfoBoxBottomPadding;
             }
 
