@@ -23,7 +23,11 @@ namespace Gadget.Editor.DrawerExtensions
         public override bool IsInvalid(SerializedProperty property, out string errorMessage)
         {
             errorMessage = $"Field {FieldInfo.Name} is an array or List<>.";
-            return FieldIsArrayOrList();
+            
+            if (FieldIsArrayOrList())
+                return true;
+
+            return base.IsInvalid(property, out errorMessage);
         }
 
         private bool FieldIsArrayOrList()
