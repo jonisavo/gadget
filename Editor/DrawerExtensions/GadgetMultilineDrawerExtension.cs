@@ -34,14 +34,14 @@ namespace Gadget.Editor.DrawerExtensions
             return true;
         }
 
-        public override bool TryOverrideHeight(float currentHeight, SerializedProperty property, out float newHeight)
+        public override bool TryOverrideHeight(SerializedProperty property, GUIContent label, out float newHeight)
         {
-            newHeight = currentHeight;
+            newHeight = 0f;
             
             if (!IsPropertyValid(property))
                 return false;
 
-            newHeight += GetMultilineHeight();
+            newHeight = GetMultilineHeight();
 
             return true;
         }

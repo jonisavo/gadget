@@ -114,13 +114,13 @@ namespace Gadget.Editor.DrawerExtensions
         /// Returns whether the extension should override the property height.
         /// It outputs the new height.
         /// </summary>
-        /// <param name="currentHeight">Current property height</param>
         /// <param name="property">The SerializedProperty from the calling PropertyDrawer</param>
+        /// <param name="label">The GUIContent label</param>
         /// <param name="newHeight">New height</param>
         /// <returns></returns>
-        public virtual bool TryOverrideHeight(float currentHeight, SerializedProperty property, out float newHeight)
+        public virtual bool TryOverrideHeight(SerializedProperty property, GUIContent label, out float newHeight)
         {
-            newHeight = currentHeight;
+            newHeight = 0f;
             return false;
         }
 

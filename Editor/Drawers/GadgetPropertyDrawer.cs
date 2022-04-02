@@ -132,20 +132,26 @@ namespace Gadget.Editor.Drawers
             if (extensions.Any(extension => !extension.IsVisible(property)))
                 return height;
 
-            height += EditorGUI.GetPropertyHeight(property, label, true);
+            height += GetPropertyHeight(property, label, extensions);
             
-            foreach (var extension in extensions)
-            {
-                var didOverrideHeight =
-                    extension.TryOverrideHeight(height, property, out var newHeight);
-                
-                if (!didOverrideHeight)
-                    continue;
-                
-                height = newHeight;
-                break;
-            }
             return height;
+        }
+
+        private static float GetPropertyHeight(
+            SerializedProperty property,
+            GUIContent label,
+            GadgetDrawerExtension[] extensions
+        )
+        {
+            var height = 0f;
+
+            var didOverrideHeight =
+                extensions.Any(extension => extension.TryOverrideHeight(property, label, out height));
+
+            if (didOverrideHeight)
+                return height;
+            
+            return EditorGUI.GetPropertyHeight(property, label, true);
         }
     }
 }

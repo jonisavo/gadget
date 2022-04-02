@@ -32,9 +32,9 @@ namespace Gadget.Editor.DrawerExtensions
             return false;
         }
 
-        public override bool TryOverrideHeight(float currentHeight, SerializedProperty property, out float newHeight)
+        public override bool TryOverrideHeight(SerializedProperty property, GUIContent label, out float newHeight)
         {
-            newHeight = currentHeight;
+            newHeight = 0f;
 
             if (!property.isExpanded)
                 return false;
@@ -42,6 +42,8 @@ namespace Gadget.Editor.DrawerExtensions
             if (!IsPropertyValid(property))
                 return false;
             
+            newHeight += EditorGUI.GetPropertyHeight(property, label, true);
+
             var serializedObject = property.serializedObject;
             var asset = serializedObject.targetObject;
             using (new ObjectScope(asset))
