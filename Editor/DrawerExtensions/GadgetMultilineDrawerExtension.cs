@@ -14,19 +14,25 @@ namespace Gadget.Editor.DrawerExtensions
             if (!IsPropertyValid(property))
                 return false;
 
+            var textAreaPosition = EditorGUI.PrefixLabel(position, Label);
+            textAreaPosition.height = GetMultilineHeight();
+
             EditorGUI.BeginChangeCheck();
 
-            var labelPosition = position;
-            labelPosition.height = GetMultilineHeight();
-            var labelFieldStyle = GUI.skin.label;
-            labelFieldStyle.alignment = TextAnchor.UpperLeft;
-            EditorGUI.LabelField(labelPosition, Label, labelFieldStyle);
+            // TextArea is given an additional indent for some strange reason,
+            // this undoes it.
+            var indented = EditorGUI.indentLevel > 0;
+            if (indented)
+                EditorGUI.indentLevel--;
 
-            var textAreaPosition = position;
-            textAreaPosition.x += EditorGUIUtility.labelWidth;
-            textAreaPosition.height = GetMultilineHeight();
-            
-            var newString = EditorGUI.TextArea(textAreaPosition, property.stringValue);
+            var newString = EditorGUI.TextArea(
+                textAreaPosition,
+                property.stringValue,
+                EditorStyles.textArea
+            );
+
+            if (indented)
+                EditorGUI.indentLevel++;
 
             if (EditorGUI.EndChangeCheck())
                 property.stringValue = newString;
