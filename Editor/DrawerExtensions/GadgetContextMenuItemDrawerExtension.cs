@@ -54,7 +54,8 @@ namespace Gadget.Editor.DrawerExtensions
 
         private static void InvokeMethodOnTargetObject(SerializedProperty property, MethodInfo methodInfo)
         {
-            var targetObject = property.serializedObject.targetObject;
+            var targetObject =
+                SerializedPropertyUtils.GetNearestInspectedObject(property);
             
             object[] parameters = null;
 
@@ -117,7 +118,8 @@ namespace Gadget.Editor.DrawerExtensions
 
         private bool TryGetMethodOfProperty(SerializedProperty property, out MethodInfo methodInfo)
         {
-            var targetObject = property.serializedObject.targetObject;
+            var targetObject =
+                SerializedPropertyUtils.GetNearestInspectedObject(property);
 
             return TypeUtils.TryGetMethodOfObject(
                 targetObject, ContextMenuItemAttribute.MethodName, out methodInfo);

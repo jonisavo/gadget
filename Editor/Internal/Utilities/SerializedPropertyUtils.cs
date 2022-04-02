@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using JetBrains.Annotations;
 using UnityEditor;
 
 namespace Gadget.Editor.Internal.Utilities
@@ -57,12 +58,59 @@ namespace Gadget.Editor.Internal.Utilities
             return path.Split('.');
         }
 
+        public static object GetNearestInspectedObject(SerializedProperty property)
+        {
+            var propertyPath = property.propertyPath;
+            var indexOfLastDotInPropertyPath = propertyPath.LastIndexOf('.');
+
+            if (indexOfLastDotInPropertyPath <= 0)
+                return property.serializedObject.targetObject;
+
+            propertyPath = propertyPath.Substring(0, indexOfLastDotInPropertyPath);
+            
+            return GetNearestInspectedObject(property, propertyPath);
+        }
+
+        private static object GetNearestInspectedObject(SerializedProperty property, string propertyPath)
+        {
+            var serializedObject = property.serializedObject;
+
+            // we are in the root object
+            if (string.IsNullOrEmpty(propertyPath))
+                return serializedObject.targetObject;
+            
+            var baseProperty = serializedObject.FindProperty(propertyPath);
+            object targetObject = null;
+            
+            if (baseProperty != null) 
+                targetObject = GetTargetObjectOfProperty(baseProperty);
+
+            var indexOfLastDotInPropertyPath = propertyPath.LastIndexOf('.');
+            
+            // if no valid object is retrieved from the current property path,
+            // recurse towards the root object
+
+            var propertyPathOneLayerAbove =
+                propertyPath.Substring(0, indexOfLastDotInPropertyPath);
+            
+            if (targetObject == null)
+                return GetNearestInspectedObject(property, propertyPathOneLayerAbove);
+
+            var targetObjectType = targetObject.GetType();
+
+            if (!targetObjectType.IsSerializable)
+                return GetNearestInspectedObject(property, propertyPathOneLayerAbove);
+                    
+            // valid object has been retrieved
+            return targetObject;
+        }
+
         /// <summary>
         /// Gets the object the property represents, i.e. its value.
         /// </summary>
         /// <param name="prop">SerializedProperty object</param>
         /// <returns>The property value</returns>
-        public static object GetTargetObjectOfProperty(SerializedProperty prop)
+        public static object GetTargetObjectOfProperty([NotNull] SerializedProperty prop)
         {
             object targetObj = prop.serializedObject.targetObject;
             var elements = GetPropertyPathElements(prop);

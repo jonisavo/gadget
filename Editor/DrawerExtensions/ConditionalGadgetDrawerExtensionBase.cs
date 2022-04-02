@@ -45,7 +45,7 @@ namespace Gadget.Editor.DrawerExtensions
             if (TryGetBooleanField(property, out _))
                 return false;
 
-            errorMessage = $"Member {Attribute.MemberName} not found or is not a boolean";
+            errorMessage = $"Member {MemberName} not found or is not a boolean";
             return true;
         }
         
@@ -56,7 +56,7 @@ namespace Gadget.Editor.DrawerExtensions
             if (string.IsNullOrEmpty(MemberName))
                 return false;
 
-            var targetObject = property.serializedObject.targetObject;
+            var targetObject = SerializedPropertyUtils.GetNearestInspectedObject(property);
 
             if (targetObject == null)
                 return false;
