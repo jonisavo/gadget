@@ -89,10 +89,11 @@ namespace Gadget.Editor.Internal.Utilities
             
             // if no valid object is retrieved from the current property path,
             // recurse towards the root object
-
-            var propertyPathOneLayerAbove =
-                propertyPath.Substring(0, indexOfLastDotInPropertyPath);
             
+            var propertyPathOneLayerAbove = indexOfLastDotInPropertyPath > 0
+                ? propertyPath.Substring(0, indexOfLastDotInPropertyPath)
+                : "";
+
             if (targetObject == null)
                 return GetNearestInspectedObject(property, propertyPathOneLayerAbove);
 
