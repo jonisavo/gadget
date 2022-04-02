@@ -1,4 +1,31 @@
-﻿## 0.8.0 [2022-03-31]
+﻿## 0.9.0 [2022-04-02]
+
+### `GadgetDrawerExtension`
+- Remove `currentHeight` argument from `TryOverrideHeight`
+- Add `label` argument of type `GUIContent` to `TryOverrideHeight`
+
+### `GadgetMultilineAttribute`
+- Fix erroneous placement of the text area
+
+### `InlineAttribute`
+- Fix incorrect height in arrays
+
+### `EnableIfAttribute`, `ShowIfAttribute`, `GadgetContextMenuItemAttribute`
+- Fix usage in nested structures
+
+### `InlineAttribute` & `SerializeReferenceSelectorAttribute`
+- Display a "nice" version of the type name if possible
+
+### `GadgetContextMenuItem`
+- Show error when no method name is specified
+
+### `ShowIfAttribute`
+- Show error if the field is a List<>
+
+### `GadgetTooltipAttribute`
+- Show error when the given text is null or empty
+
+## 0.8.0 [2022-03-31]
 
 ### `ReferenceTypeSelectorAttribute`
 - Renamed from `SerializeReferenceSelectorAttribute`
