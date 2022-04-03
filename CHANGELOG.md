@@ -1,4 +1,9 @@
-﻿## 0.9.1 [2022-04-03]
+﻿## 0.9.2 [2022-04-03]
+
+### `InlineAttribute` & `SerializeReferenceSelectorAttribute`
+- Fix type dropdown being empty if the field is a List<T>
+
+## 0.9.1 [2022-04-03]
 
 - Update documentation
 
