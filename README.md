@@ -8,7 +8,9 @@ The goal of Gadget is to make Unity game development more fun.
 
 Install via Git URL by declaring the package in your manifest.json file.
 
-TODO
+```
+"io.savolainen.gadget.core": "https://github.com/jonisavo/gadget.git#latest"
+```
 
 ## Attributes
 
