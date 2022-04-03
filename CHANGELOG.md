@@ -1,4 +1,11 @@
-﻿## 0.9.0 [2022-04-02]
+﻿## 0.9.1 [2022-04-03]
+
+- Update documentation
+
+### `GadgetMultilineAttribute`
+- Fix additional identation of the text area
+
+## 0.9.0 [2022-04-02]
 
 ### `GadgetDrawerExtension`
 - Remove `currentHeight` argument from `TryOverrideHeight`
