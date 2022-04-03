@@ -15,11 +15,10 @@ namespace Gadget.Editor.Internal.Utilities
 
         public static Type[] GetConcreteTypes(Type type)
         {
-            if (type.IsArray)
-                type = type.GetElementType();
-
             if (type == null)
                 return Array.Empty<Type>();
+
+            type = GetPrimaryConcreteType(type);
 
             if (ConcreteTypes.TryGetValue(type, out var concreteTypes))
                 return concreteTypes;
@@ -61,7 +60,7 @@ namespace Gadget.Editor.Internal.Utilities
         {
             if (type.IsArray)
                 return type.GetElementType();
-            if (type.IsGenericType)
+            if (typeof(IEnumerable<object>).IsAssignableFrom(type))
                 return type.GenericTypeArguments[0];
 
             return type;
