@@ -21,18 +21,16 @@ namespace Gadget.Editor.DrawerExtensions
 
             // TextArea is given an additional indent for some strange reason,
             // this undoes it.
-            var indented = EditorGUI.indentLevel > 0;
-            if (indented)
-                EditorGUI.indentLevel--;
+            var previousIndentLevel = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = 0;
 
             var newString = EditorGUI.TextArea(
                 textAreaPosition,
                 property.stringValue,
                 EditorStyles.textArea
             );
-
-            if (indented)
-                EditorGUI.indentLevel++;
+            
+            EditorGUI.indentLevel = previousIndentLevel;
 
             if (EditorGUI.EndChangeCheck())
                 property.stringValue = newString;
