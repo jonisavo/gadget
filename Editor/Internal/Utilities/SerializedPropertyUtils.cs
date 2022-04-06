@@ -99,9 +99,9 @@ namespace Gadget.Editor.Internal.Utilities
 
             var targetObjectType = targetObject.GetType();
 
-            if (!targetObjectType.IsSerializable)
+            if (!TypeUtils.IsTypeConcrete(targetObjectType) || !targetObjectType.IsSerializable)
                 return GetNearestInspectedObject(property, propertyPathOneLayerAbove);
-                    
+
             // valid object has been retrieved
             return targetObject;
         }
