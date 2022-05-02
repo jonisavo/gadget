@@ -21,7 +21,7 @@ _Based on work by Garett Bass and contributors, see [UnityExtensions.InspectInli
 Allows viewing `UnityEngine.Object` in an inline editor, and creating new `ScriptableObject`
 and `Material` assets.
 
-![Inline](./Documentation~/Inline.gif)
+![Inline](https://github.com/jonisavo/gadget/blob/master/Documentation~/Inline.gif?raw=true)
 
 ```c#
 [CreateAssetMenu(fileName = "EnemyData", menuName = "Enemy Data")]
@@ -50,7 +50,7 @@ public BossData boss;
 
 Choose the type of a `SerializeReference` field.
 
-![ReferenceTypeSelector](./Documentation~/ReferenceTypeSelector.gif)
+![ReferenceTypeSelector](https://github.com/jonisavo/gadget/blob/master/Documentation~/ReferenceTypeSelector.gif?raw=true)
 
 ```c#
 [Serializable]
@@ -106,7 +106,7 @@ public IEvent[] events;
 
 Specify the type menu path used with `[Inline]` and `[ReferenceTypeSelector]`.
 
-![TypeMenuPath](./Documentation~/TypeMenuPath.gif)
+![TypeMenuPath](https://github.com/jonisavo/gadget/blob/master/Documentation~/TypeMenuPath.gif?raw=true)
 
 ```c#
 [TypeMenuPath("Heroes/Swordsman")]
