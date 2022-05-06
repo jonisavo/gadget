@@ -143,14 +143,10 @@ namespace Gadget.Editor.Drawers
             GadgetDrawerExtension[] extensions
         )
         {
-            var height = 0f;
+            foreach (var extension in extensions)
+                if (extension.TryOverrideHeight(property, label, out var height))
+                    return height;
 
-            var didOverrideHeight =
-                extensions.Any(extension => extension.TryOverrideHeight(property, label, out height));
-
-            if (didOverrideHeight)
-                return height;
-            
             return EditorGUI.GetPropertyHeight(property, label, true);
         }
     }
