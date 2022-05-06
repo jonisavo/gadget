@@ -57,7 +57,7 @@ namespace Gadget.Editor.DrawerExtensions
                 var spacing = EditorGUIUtility.standardVerticalSpacing;
                 newHeight += spacing;
                 newHeight += GetInlinePropertyHeight(target);
-                newHeight += 1;
+                newHeight += 4;
             }
             return true;
         }
@@ -104,7 +104,7 @@ namespace Gadget.Editor.DrawerExtensions
                     xMin = position.xMin + 2,
                     xMax = position.xMax - 18,
                     yMin = propertyRect.yMax + spacing,
-                    yMax = position.yMax - 1
+                    yMax = position.yMax - 2
                 };
                 DoInlinePropertyGUI(inlineRect, target);
             }
